@@ -1,0 +1,48 @@
+using SpacetimeDB;
+using System;
+using System.Linq;
+
+public static partial class Module
+{
+    [Table(Name = "card", Public = true)]
+    public partial struct Card
+    {
+        [PrimaryKey, AutoInc] public ulong CardId;
+        public ulong  BoardId;
+        public string Title;
+        public string State;
+        public Identity Assignee;
+        public Timestamp CreatedAt;
+        public Timestamp? CompletedAt;
+    }
+
+    [Reducer]
+    public static void AddCard(ReducerContext ctx, ulong boardId, string title)
+    {
+        var board = ctx.Db.board.BoardId.Find(boardId) ??
+            throw new Exception("board not found");
+        if (!ctx.Db.collaborator.Iter().Any(c => c.BoardId == boardId && c.Identity == ctx.Sender))
+            throw new Exception("not allowed");
+
+        ctx.Db.card.Insert(new Card {
+            BoardId = boardId,
+            Title   = title,
+            State   = "todo",
+            Assignee = ctx.Sender,
+            CreatedAt = ctx.Timestamp
+        });
+    }
+
+    [Reducer]
+    public static void CompleteCard(ReducerContext ctx, ulong cardId)
+    {
+        var c = ctx.Db.card.CardId.Find(cardId) ??
+            throw new Exception("no card");
+
+        if (c.Assignee != ctx.Sender) throw new Exception("not your card");
+
+        c.State = "done";
+        c.CompletedAt = ctx.Timestamp;
+        ctx.Db.card.CardId.Update(c);
+    }
+}
