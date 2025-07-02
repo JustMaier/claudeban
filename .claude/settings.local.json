@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(spacetime publish:*)"
+      "Bash(spacetime publish:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": []
   }
