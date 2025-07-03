@@ -1,0 +1,7 @@
+# Ignore all error logs
+*.log
+*.txt
+
+# But keep the directory
+!.gitignore
+!README.md

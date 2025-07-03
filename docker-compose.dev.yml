@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  spacetimedb:
+    build:
+      context: ./docker/dev/spacetimedb
+      dockerfile: Dockerfile
+    container_name: spacetimedb-dev
+    volumes:
+      - ./server:/workspace/server:rw
+      - spacetime-data:/var/spacetimedb
+    environment:
+      - SPACETIME_MODULE_NAME=kanban-plus
+    ports:
+      - "3000:3000"  # WebSocket
+      - "3001:3001"  # Admin interface
+    networks:
+      - kanban-network
+    healthcheck:
+      test: ["CMD", "spacetime", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  client:
+    build:
+      context: ./docker/dev/client
+      dockerfile: Dockerfile
+    container_name: client-dev
+    volumes:
+      - ./client:/workspace/client:rw
+      - /workspace/client/node_modules  # Prevent overwriting node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_SPACETIME_URI=ws://spacetimedb:3000/kanban-plus
+    ports:
+      - "5173:5173"  # Vite dev server
+    networks:
+      - kanban-network
+    depends_on:
+      spacetimedb:
+        condition: service_healthy
+    command: npm run dev -- --host 0.0.0.0
+
+  puppeteer:
+    build:
+      context: ./docker/dev/puppeteer
+      dockerfile: Dockerfile
+    container_name: puppeteer-dev
+    volumes:
+      - ./puppeteer-scripts:/scripts:rw
+      - ./screenshots:/screenshots:rw
+      - ./puppeteer-errors:/errors:rw
+      - ./docker/dev/puppeteer/scripts:/built-in-scripts:ro
+    environment:
+      - CLIENT_URL=http://client:5173
+      - SCREENSHOT_DIR=/screenshots
+      - ERROR_LOG_DIR=/errors
+      - NODE_ENV=development
+    ports:
+      - "9222:9222"  # Chrome DevTools Protocol
+    networks:
+      - kanban-network
+    depends_on:
+      - client
+    cap_add:
+      - SYS_ADMIN  # Required for Chrome sandbox
+
+networks:
+  kanban-network:
+    driver: bridge
+
+volumes:
+  spacetime-data:

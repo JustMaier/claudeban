@@ -1,68 +1,113 @@
-### Goal in One Sentence
+# SpacetimeDB Kanban - Agent Instructions
 
-Spin up a full-stack demo of **SpacetimeDB**: a C# “Kanban-Plus” server module (showcasing every DB feature) and a Svelte 5 + TypeScript front-end that live-syncs boards/cards, all running on your local machine.
+Last Updated: 2025-01-03 (Manual - run `/project:sync-status` to update)
+
+## 🎯 Current Sprint Focus
+
+**Phase 1: Infrastructure** - Setting up shadcn-svelte and core systems for UI overhaul.
+
+## 📊 Project Status
+
+- **Active Phase**: Phase 1 (0/3 tasks completed)
+- **Recently Completed**: 
+  - ✅ Project planning documentation
+  - ✅ Git worktree SOPs
+  - ✅ Future feature specifications
+- **In Progress**: None (Phase 1 ready to start)
+- **Available Tasks**: 
+  - shadcn-svelte initialization
+  - Server model updates (position, theme fields)
+  - New reducers for sorting and themes
+
+## 🚀 Quick Start (30 seconds to productivity)
+
+1. **Check available work**:
+   ```bash
+   cat TODO/TRACKING/style-overhaul.md | grep "⬜"
+   ```
+
+2. **Claim a task**:
+   ```bash
+   # Create your worktree
+   git worktree add ../initial-worktrees/[your-name]-[feature] -b feature/[feature-name]
+   cd ../initial-worktrees/[your-name]-[feature]
+   
+   # Update tracking file to show you've claimed it
+   ```
+
+3. **Start coding**:
+   - Follow SOPs in `TODO/README.md`
+   - Check dependencies in tracking file
+   - Commit frequently in your branch
+
+## 📁 Essential Locations
+
+- `/TODO/README.md` - Complete SOPs and procedures
+- `/TODO/TRACKING/style-overhaul.md` - Current work status
+- `/.claude/commands/` - Custom commands for common tasks
+- `/README/` - Human-friendly documentation
+- `/ARCHIVE/setup-guide.md` - Original setup instructions
+
+## 🛠️ Key Commands
+
+```bash
+# Setup environment (NEW: Docker recommended for agents)
+/project:start-dev-env        # Start Docker environment with visual testing
+/project:setup-spacetimedb    # Alternative: manual setup
+
+# Visual testing (for UI work)
+/project:test-visual responsive  # Capture all viewports/themes
+/project:test-visual custom my-test.js  # Run custom Puppeteer test
+
+# Project management
+/project:sync-status          # Update this file with latest info
+/project:claim-task [task-id] # Claim and start a task
+
+# Common development commands
+docker-compose exec spacetimedb spacetime publish --project-path /workspace/server kanban-plus
+docker-compose exec client npm run db:generate
+docker-compose logs -f [service]
+```
+
+## 🎨 What We're Building
+
+A modern UI overhaul featuring:
+- **shadcn-svelte** component library
+- **Dark/light modes** with custom theme colors
+- **Drag-and-drop** card management
+- **Mobile responsive** design
+- **Real-time collaboration** features
+
+See [TODO/style-overhaul.md](TODO/style-overhaul.md) for the complete plan.
+
+## 🔄 Development Workflow
+
+1. **Create worktree** for isolation
+2. **Update tracking** to claim your task
+3. **Make changes** following the plan
+4. **Test locally** with multiple browser tabs
+5. **Commit and push** to your branch
+6. **Create PR** for review
+
+## ⚡ Current Opportunities
+
+### Phase 1 Tasks (Start Here!)
+- [ ] Run shadcn-svelte init and configure Tailwind
+- [ ] Add position field to Card table + sorting reducer
+- [ ] Add theme fields to User table + preference reducer
+
+### Parallel Work Available (Phase 2+)
+- Theme system implementation (after Phase 1)
+- Component library setup (after Phase 1)
+- Multiple component development tracks (after Phase 2)
+
+## 🔗 Quick Links
+
+- [Full SOPs](TODO/README.md)
+- [Architecture Overview](README/architecture.md)
+- [Development Guide](README/development.md)
+- [Troubleshooting](README/troubleshooting.md)
 
 ---
 
-### What’s Already Done
-
-1. **Server module design**
-
-   * Tables: `user`, `board`, `card`, `metric`, `metric_timer`
-   * Reducers: init / presence hooks, CRUD for boards & cards, nightly metric roll-up
-   * Row-level security filter example
-2. **Client skeleton**
-
-   * Svelte 5 runes app scaffolded with Vite
-   * SpacetimeDB TS SDK installed
-   * Typed bindings generator wired
-   * Reactive UI: create boards/cards, live subscription
-
----
-
-### Local Setup Checklist
-
-| Step                               | Command / File                                                                                                                    | Outcome                                                      |                                   |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | --------------------------------- |
-| **1. Install toolchain**           | \`curl -s [https://install.spacetimedb.com](https://install.spacetimedb.com)                                                      | bash`<br>`dotnet workload install wasi-experimental\`        | `spacetime` CLI + .NET WASI ready |
-| **2. Bootstrap repo**              | `mkdir kanban-demo && cd kanban-demo`                                                                                             | project root                                                 |                                   |
-| **3. Create server**               | `spacetime init --lang csharp server`                                                                                             | `server/StdbModule.csproj`                                   |                                   |
-| **4. Paste our `Lib.cs`**          | overwrite stub with provided “Kanban-Plus” code                                                                                   | all tables/reducers defined                                  |                                   |
-| **5. Build & publish**             | `spacetime publish --project-path server kanban-plus`                                                                             | `.wasm` pushed to local registry                             |                                   |
-| **6. Start DB node**               | `spacetime start kanban-plus`                                                                                                     | WebSocket endpoint on **ws\://localhost:3000/kanban-plus**   |                                   |
-| **7. Front-end scaffold**          | `npm create vite@latest kanban-plus-client -- --template svelte@next`<br>`cd kanban-plus-client && npm i`                         | Svelte 5 project                                             |                                   |
-| **8. Add SDK & generate bindings** | `npm i @clockworklabs/spacetimedb-sdk`<br>`spacetime generate --lang typescript --project-path ../server --out-dir src/generated` | typed API in `src/generated`                                 |                                   |
-| **9. Paste client code**           | `src/lib/stdb.ts`, `src/routes/+page.svelte` from guide                                                                           | UI wired                                                     |                                   |
-| **10. Run dev server**             | `npm run dev`                                                                                                                     | [http://localhost:5173](http://localhost:5173) talking to DB |                                   |
-| **11. Test**                       | open two tabs, create boards/cards, watch real-time sync                                                                          | success                                                      |                                   |
-
----
-
-### Where the AI Agent Can Pitch In
-
-1. **Env bumps**
-
-   * Troubleshoot dotnet-wasi build errors (PATH, SDK versions).
-   * Verify `spacetime` CLI install on Windows/Linux differences.
-
-2. **Compilation issues**
-
-   * C# warnings (nullable, STDB\_UNSTABLE pragmas).
-   * TypeScript path aliases or vite config tweaks.
-
-3. **Hot-reload Dev UX**
-
-   * Script to rebuild & republish server on code change (`watchexec`, `nodemon`, etc.).
-   * Auto-restart `spacetime start` and reconnect clients.
-
-4. **RLS & auth polish**
-
-   * Extend visibility filters or add JWT-based identity mapping.
-
-5. **UI niceties**
-
-   * Tailwind styling, drag-&-drop columns, optimistic card reorder.
-
-6. **Packaging**
-
-   * Docker-compose file with Spacetime node + Vite dev server for one-command spin-up.
+*For setup instructions, see [ARCHIVE/setup-guide.md](ARCHIVE/setup-guide.md)*

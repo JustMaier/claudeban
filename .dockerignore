@@ -1,0 +1,63 @@
+# Git
+.git/
+.gitignore
+
+# Dependencies
+node_modules/
+.pnp.*
+.yarn/
+
+# Build outputs
+dist/
+build/
+*.wasm
+server/bin/
+server/obj/
+.next/
+out/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+.dockerignore
+
+# Project specific
+screenshots/
+puppeteer-errors/
+puppeteer-scripts/
+TODO/
+DOCS/
+README/
+ARCHIVE/
+DEBUG/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
