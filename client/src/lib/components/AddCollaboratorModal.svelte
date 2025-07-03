@@ -2,11 +2,12 @@
   import { useUserStore } from '$lib/stores/user-store.svelte';
   import { useConnection } from '$lib/stores/connection-store.svelte';
   import { idMatch } from '$lib/utils/db-utils';
+  import type { Identity } from '@clockworklabs/spacetimedb-sdk';
 
   interface Props {
     show: boolean;
     onClose: () => void;
-    onAdd: (userId: string) => void;
+    onAdd: (identity: Identity) => void;
   }
 
   let { show, onClose, onAdd }: Props = $props();
@@ -14,21 +15,26 @@
   const userStore = useUserStore();
   const { id: currentUserId } = useConnection();
 
-  let selectedUsers = $state<Set<string>>(new Set());
+  let selectedUsers = $state<Set<Identity>>(new Set());
 
-  function toggleUser(userId: string) {
-    if (selectedUsers.has(userId)) {
-      selectedUsers.delete(userId);
+  function toggleUser(identity: Identity) {
+    const existing = Array.from(selectedUsers).find(id => idMatch(id, identity));
+    if (existing) {
+      selectedUsers.delete(existing);
     } else {
-      selectedUsers.add(userId);
+      selectedUsers.add(identity);
     }
     selectedUsers = new Set(selectedUsers);
   }
 
   function handleAdd() {
-    selectedUsers.forEach(userId => onAdd(userId));
+    selectedUsers.forEach(identity => onAdd(identity));
     selectedUsers.clear();
     onClose();
+  }
+
+  function isSelected(identity: Identity): boolean {
+    return Array.from(selectedUsers).some(id => idMatch(id, identity));
   }
 
   function handleBackdropClick(e: MouseEvent) {
@@ -39,16 +45,16 @@
 </script>
 
 {#if show}
-  <div class="modal-backdrop" onclick={handleBackdropClick}>
+  <div class="modal-backdrop" onclick={handleBackdropClick} onkeydown={(e) => e.key === 'Escape' && onClose()} role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
     <div class="modal">
-      <h2>Add Collaborators</h2>
+      <h2 id="modal-title">Add Collaborators</h2>
       <div class="user-list">
         {#each userStore.users as user}
           {#if currentUserId && !idMatch(user.id, currentUserId)}
             <label class="user-item">
               <input
                 type="checkbox"
-                checked={selectedUsers.has(user.id)}
+                checked={isSelected(user.id)}
                 onchange={() => toggleUser(user.id)}
               />
               <span>{user.name || 'Unnamed User'}</span>

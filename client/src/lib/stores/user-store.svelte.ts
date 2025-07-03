@@ -33,7 +33,6 @@ export function initializeUserStore() {
 
   // Then subscribe
   conn.subscriptionBuilder()
-    .subscribe(['SELECT * FROM user'])
     .onApplied(() => {
       console.log('[UserStore] User subscription applied');
       // Get current user from cache
@@ -43,7 +42,8 @@ export function initializeUserStore() {
       }
       // Get all users
       users = Array.from(conn.db.user.iter());
-    });
+    })
+    .subscribe(['SELECT * FROM user']);
 }
 
 export function useUserStore() {

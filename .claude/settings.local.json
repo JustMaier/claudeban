@@ -6,7 +6,9 @@
       "Bash(mkdir:*)",
       "Bash(spacetime generate:*)",
       "Bash(npm run check:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(grep:*)",
+      "Bash(npm run lint)"
     ],
     "deny": []
   }

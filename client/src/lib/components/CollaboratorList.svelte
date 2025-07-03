@@ -3,6 +3,7 @@
   import { useUserStore } from '$lib/stores/user-store.svelte';
   import AddCollaboratorModal from './AddCollaboratorModal.svelte';
   import { idMatch } from '$lib/utils/db-utils';
+  import type { Identity } from '@clockworklabs/spacetimedb-sdk';
 
   interface Props {
     boardId: bigint;
@@ -15,8 +16,8 @@
   
   let showAddModal = $state(false);
 
-  async function handleAddCollaborator(userId: string) {
-    await collaboratorStore.addCollaborator(userId);
+  async function handleAddCollaborator(identity: Identity) {
+    await collaboratorStore.addCollaborator(identity);
   }
 </script>
 

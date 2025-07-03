@@ -24,11 +24,11 @@ export function initializeBoardStore() {
 
   // Then subscribe
   conn.subscriptionBuilder()
-    .subscribe(['SELECT * FROM board'])
     .onApplied(() => {
       console.log('[BoardStore] Board subscription applied');
       boards = Array.from(conn.db.board.iter());
-    });
+    })
+    .subscribe(['SELECT * FROM board']);
 }
 
 export function useBoardStore() {

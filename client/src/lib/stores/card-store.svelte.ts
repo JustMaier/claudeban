@@ -16,21 +16,21 @@ function createCardStoreInstance(boardId: bigint): CardStore {
   const { conn } = getConnection();
 
   // Set up listeners first
-  const unsubInsert = conn.db.card.onInsert((_ctx, card) => {
+  conn.db.card.onInsert((_ctx, card) => {
     if (card.boardId === boardId) {
       console.log(`[CardStore ${boardId}] Card inserted:`, card);
       cards = [...cards, card];
     }
   });
 
-  const unsubUpdate = conn.db.card.onUpdate((_ctx, _old, card) => {
+  conn.db.card.onUpdate((_ctx, _old, card) => {
     if (card.boardId === boardId) {
       console.log(`[CardStore ${boardId}] Card updated:`, card);
       cards = cards.map((c) => (c.cardId === card.cardId ? card : c));
     }
   });
 
-  const unsubDelete = conn.db.card.onDelete((_ctx, card) => {
+  conn.db.card.onDelete((_ctx, card) => {
     if (card.boardId === boardId) {
       console.log(`[CardStore ${boardId}] Card deleted:`, card);
       cards = cards.filter((c) => c.cardId !== card.cardId);
@@ -38,21 +38,18 @@ function createCardStoreInstance(boardId: bigint): CardStore {
   });
 
   // Then subscribe (after listeners are ready)
-  const unsubData = conn.subscriptionBuilder()
-    .subscribe([`SELECT * FROM card WHERE boardId = ${boardId}`])
+  const subscription = conn.subscriptionBuilder()
     .onApplied(() => {
       console.log(`[CardStore ${boardId}] Card subscription applied`);
       // Get initial cards for this board
       cards = Array.from(conn.db.card.iter()).filter(c => c.boardId === boardId);
-    });
+    })
+    .subscribe([`SELECT * FROM card WHERE boardId = ${boardId}`]);
 
   // Cleanup function for when refCount hits 0
   const cleanup = () => {
     console.log(`[CardStore ${boardId}] Cleaning up`);
-    unsubInsert();
-    unsubUpdate();
-    unsubDelete();
-    unsubData();
+    subscription.unsubscribe();
   };
 
   return {
