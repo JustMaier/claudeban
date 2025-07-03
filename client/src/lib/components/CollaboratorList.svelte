@@ -26,7 +26,7 @@
   <button onclick={() => showAddModal = true}>Add Collaborator</button>
   
   <ul>
-    {#each collaboratorStore.collaborators as collab}
+    {#each collaboratorStore.collaborators as collab (collab.identity.toHexString())}
       {@const user = userStore.users.find((u) => idMatch(u.id, collab.identity))}
       <li>{user?.name || 'Unnamed User'}</li>
     {/each}
@@ -37,6 +37,7 @@
   show={showAddModal}
   onClose={() => showAddModal = false}
   onAdd={handleAddCollaborator}
+  existingCollaborators={collaboratorStore.collaborators}
 />
 
 <style>

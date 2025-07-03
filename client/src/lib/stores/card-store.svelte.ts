@@ -12,39 +12,51 @@ interface CardStore {
 const cardStoreRegistry = new StoreRegistry<CardStore>();
 
 function createCardStoreInstance(boardId: bigint): CardStore {
-  let cards = $state<Card[]>([]);
+  let cardMap = $state<Map<bigint, Card>>(new Map());
   const { conn } = getConnection();
 
-  // Set up listeners first
-  conn.db.card.onInsert((_ctx, card) => {
-    if (card.boardId === boardId) {
-      console.log(`[CardStore ${boardId}] Card inserted:`, card);
-      cards = [...cards, card];
-    }
-  });
-
-  conn.db.card.onUpdate((_ctx, _old, card) => {
-    if (card.boardId === boardId) {
-      console.log(`[CardStore ${boardId}] Card updated:`, card);
-      cards = cards.map((c) => (c.cardId === card.cardId ? card : c));
-    }
-  });
-
-  conn.db.card.onDelete((_ctx, card) => {
-    if (card.boardId === boardId) {
-      console.log(`[CardStore ${boardId}] Card deleted:`, card);
-      cards = cards.filter((c) => c.cardId !== card.cardId);
-    }
-  });
-
-  // Then subscribe (after listeners are ready)
+  // Subscribe first without listeners to get initial data
   const subscription = conn.subscriptionBuilder()
+    .onError((ctx, error) => {
+      console.error(`[CardStore ${boardId}] Subscription error:`, error);
+    })
     .onApplied(() => {
       console.log(`[CardStore ${boardId}] Card subscription applied`);
-      // Get initial cards for this board
-      cards = Array.from(conn.db.card.iter()).filter(c => c.boardId === boardId);
+      // Get initial cards for this board using a Map for deduplication
+      cardMap.clear();
+      for (const card of conn.db.card.iter()) {
+        if (card.boardId === boardId) {
+          cardMap.set(card.cardId, card);
+        }
+      }
+      console.log(`[CardStore ${boardId}] Loaded:`, cardMap.size, 'cards');
+
+      // Set up listeners after initial data is loaded
+      conn.db.card.onInsert((_ctx, card) => {
+        if (card.boardId === boardId) {
+          console.log(`[CardStore ${boardId}] Card inserted:`, card);
+          cardMap.set(card.cardId, card);
+          cardMap = new Map(cardMap); // Trigger reactivity
+        }
+      });
+
+      conn.db.card.onUpdate((_ctx, _old, card) => {
+        if (card.boardId === boardId) {
+          console.log(`[CardStore ${boardId}] Card updated:`, card);
+          cardMap.set(card.cardId, card);
+          cardMap = new Map(cardMap); // Trigger reactivity
+        }
+      });
+
+      conn.db.card.onDelete((_ctx, card) => {
+        if (card.boardId === boardId) {
+          console.log(`[CardStore ${boardId}] Card deleted:`, card);
+          cardMap.delete(card.cardId);
+          cardMap = new Map(cardMap); // Trigger reactivity
+        }
+      });
     })
-    .subscribe([`SELECT * FROM card WHERE boardId = ${boardId}`]);
+    .subscribe([`SELECT * FROM card WHERE BoardId = ${boardId}`]);
 
   // Cleanup function for when refCount hits 0
   const cleanup = () => {
@@ -53,7 +65,7 @@ function createCardStoreInstance(boardId: bigint): CardStore {
   };
 
   return {
-    get cards() { return cards; },
+    get cards() { return Array.from(cardMap.values()); },
     async addCard(title: string) {
       await conn.reducers.addCard(boardId, title);
     },

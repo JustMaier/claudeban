@@ -12,13 +12,20 @@
   let { children }: Props = $props();
   const connectionState = useConnection();
 
-  // Initialize connection
-  connectDb((conn, id, tok) => {
-    setConnection(conn, id, tok);
-    
-    // Initialize global stores after connection is established
-    initializeUserStore();
-    initializeBoardStore();
+  // Initialize connection only once
+  let initialized = false;
+  
+  $effect(() => {
+    if (!initialized && !connectionState.isConnected) {
+      initialized = true;
+      connectDb((conn, id, tok) => {
+        setConnection(conn, id, tok);
+        
+        // Initialize global stores after connection is established
+        initializeUserStore();
+        initializeBoardStore();
+      });
+    }
   });
 </script>
 

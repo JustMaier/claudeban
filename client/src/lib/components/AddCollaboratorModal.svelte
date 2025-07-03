@@ -3,15 +3,17 @@
   import { useConnection } from '$lib/stores/connection-store.svelte';
   import { idMatch } from '$lib/utils/db-utils';
   import type { Identity } from '@clockworklabs/spacetimedb-sdk';
+  import type { Collaborator } from '$lib/generated';
 
   interface Props {
     show: boolean;
     onClose: () => void;
     onAdd: (identity: Identity) => void;
+    existingCollaborators: Collaborator[];
   }
 
-  let { show, onClose, onAdd }: Props = $props();
-  
+  let { show, onClose, onAdd, existingCollaborators }: Props = $props();
+
   const userStore = useUserStore();
   const { id: currentUserId } = useConnection();
 
@@ -37,6 +39,10 @@
     return Array.from(selectedUsers).some(id => idMatch(id, identity));
   }
 
+  function isAlreadyCollaborator(identity: Identity): boolean {
+    return existingCollaborators.some(collab => idMatch(collab.identity, identity));
+  }
+
   function handleBackdropClick(e: MouseEvent) {
     if (e.target === e.currentTarget) {
       onClose();
@@ -50,17 +56,20 @@
       <h2 id="modal-title">Add Collaborators</h2>
       <div class="user-list">
         {#each userStore.users as user}
-          {#if currentUserId && !idMatch(user.id, currentUserId)}
+          {#if currentUserId && !idMatch(user.id, currentUserId) && !isAlreadyCollaborator(user.id)}
             <label class="user-item">
               <input
                 type="checkbox"
                 checked={isSelected(user.id)}
                 onchange={() => toggleUser(user.id)}
               />
-              <span>{user.name || 'Unnamed User'}</span>
+              <span>{user.name || user.id.toHexString().substring(0,8)}</span>
             </label>
           {/if}
         {/each}
+        {#if userStore.users.filter(u => currentUserId && !idMatch(u.id, currentUserId) && !isAlreadyCollaborator(u.id)).length === 0}
+          <p class="no-users">No available users to add</p>
+        {/if}
       </div>
       <div class="modal-actions">
         <button onclick={onClose}>Cancel</button>
@@ -137,5 +146,12 @@
   button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  .no-users {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+    margin: 0;
   }
 </style>

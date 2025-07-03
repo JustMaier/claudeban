@@ -13,34 +13,44 @@ interface CollaboratorStore {
 const collaboratorStoreRegistry = new StoreRegistry<CollaboratorStore>();
 
 function createCollaboratorStoreInstance(boardId: bigint): CollaboratorStore {
-  let collaborators = $state<Collaborator[]>([]);
+  console.log(`[CollaboratorStore] Creating new instance for board ${boardId}`);
+  let collaboratorMap = $state<Map<string, Collaborator>>(new Map());
   const { conn } = getConnection();
 
-  // Set up listeners first
-  conn.db.collaborator.onInsert((_ctx, collab) => {
-    if (collab.boardId === boardId) {
-      console.log(`[CollaboratorStore ${boardId}] Collaborator inserted:`, collab);
-      collaborators = [...collaborators, collab];
-    }
-  });
-
-  conn.db.collaborator.onDelete((_ctx, collab) => {
-    if (collab.boardId === boardId) {
-      console.log(`[CollaboratorStore ${boardId}] Collaborator deleted:`, collab);
-      collaborators = collaborators.filter(
-        (c) => !(c.boardId === collab.boardId && idMatch(c.identity, collab.identity))
-      );
-    }
-  });
-
-  // Then subscribe (after listeners are ready)
+  // Subscribe first without listeners to get initial data
   const subscription = conn.subscriptionBuilder()
+    .onError((ctx, error) => {
+      console.error(`[CollaboratorStore ${boardId}] Subscription error:`, error);
+    })
     .onApplied(() => {
       console.log(`[CollaboratorStore ${boardId}] Collaborator subscription applied`);
       // Get initial collaborators for this board
-      collaborators = Array.from(conn.db.collaborator.iter()).filter(c => c.boardId === boardId);
+      collaboratorMap.clear();
+      for (const collab of conn.db.collaborator.iter()) {
+        if (collab.boardId === boardId) {
+          collaboratorMap.set(collab.identity.toHexString(), collab);
+        }
+      }
+      console.log(`[CollaboratorStore ${boardId}] Loaded:`, collaboratorMap.size, 'collaborators');
+      
+      // Set up listeners after initial data is loaded
+      conn.db.collaborator.onInsert((ctx, collab) => {
+        if (collab.boardId === boardId) {
+          console.log(`[CollaboratorStore ${boardId}] Collaborator inserted:`, collab, 'Event:', ctx.event);
+          collaboratorMap.set(collab.identity.toHexString(), collab);
+          collaboratorMap = new Map(collaboratorMap); // Trigger reactivity
+        }
+      });
+
+      conn.db.collaborator.onDelete((_ctx, collab) => {
+        if (collab.boardId === boardId) {
+          console.log(`[CollaboratorStore ${boardId}] Collaborator deleted:`, collab);
+          collaboratorMap.delete(collab.identity.toHexString());
+          collaboratorMap = new Map(collaboratorMap); // Trigger reactivity
+        }
+      });
     })
-    .subscribe([`SELECT * FROM collaborator WHERE boardId = ${boardId}`]);
+    .subscribe([`SELECT * FROM collaborator WHERE BoardId = ${boardId}`]);
 
   // Cleanup function for when refCount hits 0
   const cleanup = () => {
@@ -49,7 +59,7 @@ function createCollaboratorStoreInstance(boardId: bigint): CollaboratorStore {
   };
 
   return {
-    get collaborators() { return collaborators; },
+    get collaborators() { return Array.from(collaboratorMap.values()); },
     async addCollaborator(identity: Identity) {
       await conn.reducers.addCollaborator(boardId, identity);
     },
