@@ -6,6 +6,7 @@ interface CardStore {
   cards: Card[];
   addCard(title: string): Promise<void>;
   completeCard(cardId: bigint): Promise<void>;
+  updateCardStatus(cardId: bigint, newStatus: string): Promise<void>;
   reassignCard(cardId: bigint, newAssignee: Identity): Promise<void>;
   _cleanup?: () => void;
 }
@@ -78,6 +79,14 @@ function createCardStoreInstance(boardId: bigint): CardStore {
         throw error;
       }
     },
+    async updateCardStatus(cardId: bigint, newStatus: string) {
+      try {
+        await conn.reducers.updateCardStatus(cardId, newStatus);
+      } catch (error) {
+        console.error(`[CardStore ${boardId}] Failed to update card status:`, error);
+        throw error;
+      }
+    },
     async reassignCard(cardId: bigint, newAssignee: Identity) {
       try {
         await conn.reducers.reassignCard(cardId, newAssignee);
@@ -98,6 +107,7 @@ export function getCardStore(boardId: bigint): CardStore & { release: () => void
     get cards() { return store.cards; },
     addCard: store.addCard,
     completeCard: store.completeCard,
+    updateCardStatus: store.updateCardStatus,
     reassignCard: store.reassignCard,
     release: () => cardStoreRegistry.release(key)
   };

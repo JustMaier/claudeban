@@ -8,6 +8,7 @@
     status: 'todo' | 'in_progress' | 'done';
     cardStore: { 
       completeCard: (cardId: bigint) => Promise<void>;
+      updateCardStatus: (cardId: bigint, newStatus: string) => Promise<void>;
       reassignCard: (cardId: bigint, newAssignee: Identity) => Promise<void>;
     };
     boardId: bigint;

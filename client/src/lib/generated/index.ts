@@ -52,6 +52,8 @@ import { RollupMetrics } from "./rollup_metrics_reducer.ts";
 export { RollupMetrics };
 import { SetUserName } from "./set_user_name_reducer.ts";
 export { SetUserName };
+import { UpdateCardStatus } from "./update_card_status_reducer.ts";
+export { UpdateCardStatus };
 
 // Import and reexport all table handle types
 import { BoardTableHandle } from "./board_table.ts";
@@ -170,6 +172,10 @@ const REMOTE_MODULE = {
       reducerName: "SetUserName",
       argsType: SetUserName.getTypeScriptAlgebraicType(),
     },
+    UpdateCardStatus: {
+      reducerName: "UpdateCardStatus",
+      argsType: UpdateCardStatus.getTypeScriptAlgebraicType(),
+    },
   },
   versionInfo: {
     cliVersion: "1.2.0",
@@ -209,6 +215,7 @@ export type Reducer = never
 | { name: "ReassignCard", args: ReassignCard }
 | { name: "RollupMetrics", args: RollupMetrics }
 | { name: "SetUserName", args: SetUserName }
+| { name: "UpdateCardStatus", args: UpdateCardStatus }
 ;
 
 export class RemoteReducers {
@@ -342,6 +349,22 @@ export class RemoteReducers {
     this.connection.offReducer("SetUserName", callback);
   }
 
+  updateCardStatus(cardId: bigint, newStatus: string) {
+    const __args = { cardId, newStatus };
+    let __writer = new BinaryWriter(1024);
+    UpdateCardStatus.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("UpdateCardStatus", __argsBuffer, this.setCallReducerFlags.updateCardStatusFlags);
+  }
+
+  onUpdateCardStatus(callback: (ctx: ReducerEventContext, cardId: bigint, newStatus: string) => void) {
+    this.connection.onReducer("UpdateCardStatus", callback);
+  }
+
+  removeOnUpdateCardStatus(callback: (ctx: ReducerEventContext, cardId: bigint, newStatus: string) => void) {
+    this.connection.offReducer("UpdateCardStatus", callback);
+  }
+
 }
 
 export class SetReducerFlags {
@@ -378,6 +401,11 @@ export class SetReducerFlags {
   setUserNameFlags: CallReducerFlags = 'FullUpdate';
   setUserName(flags: CallReducerFlags) {
     this.setUserNameFlags = flags;
+  }
+
+  updateCardStatusFlags: CallReducerFlags = 'FullUpdate';
+  updateCardStatus(flags: CallReducerFlags) {
+    this.updateCardStatusFlags = flags;
   }
 
 }

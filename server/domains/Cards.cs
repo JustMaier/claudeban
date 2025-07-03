@@ -47,6 +47,35 @@ public static partial class Module
     }
 
     [Reducer]
+    public static void UpdateCardStatus(ReducerContext ctx, ulong cardId, string newStatus)
+    {
+        var c = ctx.Db.card.CardId.Find(cardId) ??
+            throw new Exception("no card");
+
+        // Check if sender is a collaborator on the board
+        if (!ctx.Db.collaborator.Iter().Any(col => col.BoardId == c.BoardId && col.Identity == ctx.Sender))
+            throw new Exception("not a collaborator on this board");
+
+        // Validate status
+        if (newStatus != "todo" && newStatus != "in_progress" && newStatus != "done")
+            throw new Exception("invalid status");
+
+        c.State = newStatus;
+        
+        // Set or clear CompletedAt based on status
+        if (newStatus == "done")
+        {
+            c.CompletedAt = ctx.Timestamp;
+        }
+        else
+        {
+            c.CompletedAt = null;
+        }
+        
+        ctx.Db.card.CardId.Update(c);
+    }
+
+    [Reducer]
     public static void ReassignCard(ReducerContext ctx, ulong cardId, Identity newAssignee)
     {
         var c = ctx.Db.card.CardId.Find(cardId) ??

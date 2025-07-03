@@ -9,6 +9,7 @@
     card: Card;
     cardStore: { 
       completeCard: (cardId: bigint) => Promise<void>;
+      updateCardStatus: (cardId: bigint, newStatus: string) => Promise<void>;
       reassignCard: (cardId: bigint, newAssignee: Identity) => Promise<void>;
     };
     boardId: bigint;
@@ -19,6 +20,7 @@
   let error = $state<string | null>(null);
   let showReassignDropdown = $state(false);
   let isReassigning = $state(false);
+  let isUpdatingStatus = $state(false);
   
   const userStore = useUserStore();
   const collaboratorStore = useCollaboratorStore(boardId);
@@ -65,6 +67,28 @@
       isReassigning = false;
     }
   }
+  
+  async function handleStatusChange(newStatus: string) {
+    if (newStatus === card.state || isUpdatingStatus) return;
+    
+    isUpdatingStatus = true;
+    error = null;
+    
+    try {
+      await cardStore.updateCardStatus(card.cardId, newStatus);
+    } catch (err) {
+      error = err instanceof Error ? err.message : 'Failed to update status';
+      console.error('Failed to update card status:', err);
+    } finally {
+      isUpdatingStatus = false;
+    }
+  }
+  
+  const statusOptions = [
+    { value: 'todo', label: 'To Do' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'done', label: 'Done' }
+  ];
 </script>
 
 <div class="card" class:not-mine={!isMyCard}>
@@ -95,13 +119,22 @@
     </div>
   {/if}
   
-  {#if card.state !== 'done' && isMyCard}
-    <button onclick={handleComplete} disabled={isCompleting}>
-      {isCompleting ? 'Completing...' : 'Complete'}
-    </button>
-  {:else if card.state !== 'done' && !isMyCard}
-    <p class="info">Only {assignee?.name || 'the assignee'} can complete this card</p>
-  {/if}
+  <div class="status-section">
+    <label for="status-{card.cardId}">Status:</label>
+    <select 
+      id="status-{card.cardId}"
+      value={card.state} 
+      onchange={(e) => handleStatusChange(e.currentTarget.value)}
+      disabled={isUpdatingStatus}
+    >
+      {#each statusOptions as option}
+        <option value={option.value}>{option.label}</option>
+      {/each}
+    </select>
+    {#if isUpdatingStatus}
+      <span class="updating">Updating...</span>
+    {/if}
+  </div>
   {#if error}
     <p class="error">{error}</p>
   {/if}
@@ -207,6 +240,39 @@
     color: #666;
     text-align: center;
     padding: 0.5rem;
+    font-style: italic;
+  }
+  
+  .status-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .status-section label {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .status-section select {
+    flex: 1;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+  }
+  
+  .status-section select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .updating {
+    font-size: 0.75rem;
+    color: #666;
     font-style: italic;
   }
 </style>
