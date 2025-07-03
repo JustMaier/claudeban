@@ -70,7 +70,12 @@ function createCardStoreInstance(boardId: bigint): CardStore {
       await conn.reducers.addCard(boardId, title);
     },
     async completeCard(cardId: bigint) {
-      await conn.reducers.completeCard(cardId);
+      try {
+        await conn.reducers.completeCard(cardId);
+      } catch (error) {
+        console.error(`[CardStore ${boardId}] Failed to complete card:`, error);
+        throw error;
+      }
     },
     _cleanup: cleanup
   };
