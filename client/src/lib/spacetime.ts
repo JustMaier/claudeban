@@ -9,13 +9,6 @@ export function connectDb(connectedCb: (conn: DbConnection, id: Identity, tok: s
     .onConnect((conn: DbConnection, id: Identity, tok: string) => {
       localStorage.setItem('auth', tok);
       connectedCb(conn, id, tok);
-
-      conn
-        .subscriptionBuilder() // :contentReference[oaicite:1]{index=1}
-        .onApplied(() => {
-          console.log('connected');
-        })
-        .subscribe(['SELECT * FROM board', 'SELECT * FROM card', 'SELECT * FROM user']);
     })
     .onConnectError((_ctx: ErrorContext, err: Error) => {
 		console.log('error', err);

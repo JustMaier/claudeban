@@ -1,6 +1,8 @@
 <script lang="ts">
-  import type { Board, Card, User } from '$lib/generated';
+  import type { Board, Card, User, Collaborator } from '$lib/generated';
   import { useDbContext } from '$lib/context/db-context';
+  import AddCollaboratorModal from '$lib/components/AddCollaboratorModal.svelte';
+  import { idMatch } from '$lib/utils/db-utils';
 
   const { conn, id, tok } = useDbContext();
 
@@ -15,13 +17,13 @@
   let newTitle = $state('');
   let newCardTitle = $state('');
   let newUserName = $state('');
+  let collaborators = $state<Collaborator[]>([]);
+  let showAddCollaboratorModal = $state(false);
 
   // let conn: import('$generated').DbConnection;
 
   /* ---------- once on client mount ---------- */
   const identity = id;
-  currentUser = conn.db.user.id.find(identity);
-  console.log({ currentUser, identity });
 
   // live updates
   conn.db.board.onInsert((_ctx, row) => (boards = [...boards, row]));
@@ -32,20 +34,32 @@
 
   conn.db.user.onInsert((_ctx, row) => {
     users = [...users, row];
-    if (row.id === identity) currentUser = row;
+    console.log('insert', { row: row.id, identity });
+    if (idMatch(row.id, identity)) {
+      console.log('setting current user', row);
+      currentUser = row;
+    }
   });
   conn.db.user.onUpdate((_ctx, _old, row) => {
-    users = users.map((u) => (u.id === row.id ? row : u));
-    console.log({ users, row, identity });
-    if (row.id === identity) currentUser = row;
+    users = users.map((u) => (idMatch(u.id, row.id) ? row : u));
+    console.log('update', { row: row.id, identity });
+    if (idMatch(row.id, identity)) {
+      console.log('setting current user', row);
+      currentUser = row;
+    }
+  });
+
+  conn.db.collaborator.onInsert((_ctx, row) => (collaborators = [...collaborators, row]));
+  conn.db.collaborator.onDelete((_ctx, row) => {
+    collaborators = collaborators.filter((c) => !(c.boardId === row.boardId && idMatch(c.identity, row.identity)));
   });
 
   conn
-        .subscriptionBuilder() // :contentReference[oaicite:1]{index=1}
-        .onApplied(() => {
-          console.log('connected');
-        })
-        .subscribe(['SELECT * FROM board', 'SELECT * FROM card']);
+    .subscriptionBuilder() // :contentReference[oaicite:1]{index=1}
+    .onApplied(() => {
+      console.log('connected');
+    })
+    .subscribe(['SELECT * FROM board', 'SELECT * FROM card', 'SELECT * FROM collaborator', 'SELECT * FROM user']);
 
   /* ---------- reducer helpers ---------- */
   async function createBoard() {
@@ -64,6 +78,11 @@
     if (!newUserName) return;
     conn.reducers.setUserName(newUserName);
     newUserName = '';
+  }
+
+  async function addCollaborator(userId: string) {
+    if (!activeBoard) return;
+    await conn.reducers.addCollaborator(activeBoard, userId);
   }
 </script>
 
@@ -95,7 +114,20 @@
 </ul>
 
 {#if activeBoard}
-  <h2>Cards</h2>
+  <h2>Board Details</h2>
+
+  <div style="margin-bottom: 1rem;">
+    <h3>Collaborators</h3>
+    <button onclick={() => (showAddCollaboratorModal = true)}>Add Collaborator</button>
+    <ul>
+      {#each collaborators.filter((c) => c.boardId === activeBoard) as collab}
+        {@const user = users.find((u) => idMatch(u.id, collab.identity))}
+        <li>{user?.name || 'Unnamed User'}</li>
+      {/each}
+    </ul>
+  </div>
+
+  <h3>Cards</h3>
   <input bind:value={newCardTitle} placeholder="new card title" />
   <button onclick={addCard}>add</button>
 
@@ -105,6 +137,14 @@
     {/each}
   </ul>
 {/if}
+
+<AddCollaboratorModal
+  show={showAddCollaboratorModal}
+  {users}
+  currentUserId={identity}
+  onClose={() => (showAddCollaboratorModal = false)}
+  onAdd={addCollaborator}
+/>
 
 <style>
   .selected {

@@ -4,7 +4,8 @@
       "Bash(spacetime publish:*)",
       "Bash(ls:*)",
       "Bash(mkdir:*)",
-      "Bash(spacetime generate:*)"
+      "Bash(spacetime generate:*)",
+      "Bash(npm run check:*)"
     ],
     "deny": []
   }
