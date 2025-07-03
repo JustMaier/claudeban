@@ -220,29 +220,35 @@ export function useGlobalBoardViewerStore() {
 
 // Simplified hook for managing board presence lifecycle
 export function useBoardPresence(boardId: bigint) {
-  let cleanupFn = $state<(() => void) | null>(null);
+  // Use regular variable, not reactive state, to avoid infinite loops
+  let cleanupFn: (() => void) | null = null;
+  let hasStarted = false;
   
   // Reactive derived state
   const viewers = $derived(boardViewerStore.getViewerUsers(boardId));
   const viewerCount = $derived(boardViewerStore.getActiveViewerCount(boardId));
   
-  // Handle viewing lifecycle in effect
+  // Start viewing effect - only runs once per boardId
   $effect(() => {
-    // Only start viewing if store is initialized and we haven't already started
-    if (boardViewerStore.initialized && !cleanupFn) {
+    // Only start viewing if store is initialized and we haven't started for this boardId
+    if (boardViewerStore.initialized && !hasStarted) {
+      hasStarted = true;
       boardViewerStore.startViewing(boardId).then(cleanup => {
         cleanupFn = cleanup;
       }).catch(err => {
         console.error('[useBoardPresence] Failed to start viewing:', err);
       });
     }
-    
-    // Cleanup on unmount or boardId change
+  });
+  
+  // Cleanup effect - separate from start effect
+  $effect(() => {
     return () => {
       if (cleanupFn) {
         cleanupFn();
         cleanupFn = null;
       }
+      hasStarted = false;
     };
   });
   

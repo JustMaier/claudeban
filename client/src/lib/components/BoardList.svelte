@@ -46,28 +46,27 @@
 
   <ul>
     {#each boardStore.boards as board}
-      {@const activity = getBoardActivity(board.boardId)}
       {@const viewers = viewerStore.getViewerUsers(board.boardId)}
       <li class:selected={board.boardId === boardStore.activeBoard}>
         <button onclick={() => boardStore.setActiveBoard(board.boardId)}>
           <span class="board-name">{board.title} ({board.slug})</span>
           
           <span class="board-indicators">
-            {#if activity.hasActivity}
+            {#if getBoardActivity(board.boardId).hasActivity}
               <span class="status-badges">
-                {#if activity.todoCount > 0}
-                  <span class="badge todo" title="{activity.todoCount} to do">
-                    {activity.todoCount}
+                {#if getBoardActivity(board.boardId).todoCount > 0}
+                  <span class="badge todo" title="{getBoardActivity(board.boardId).todoCount} to do">
+                    {getBoardActivity(board.boardId).todoCount}
                   </span>
                 {/if}
-                {#if activity.inProgressCount > 0}
-                  <span class="badge in-progress" title="{activity.inProgressCount} in progress">
-                    {activity.inProgressCount}
+                {#if getBoardActivity(board.boardId).inProgressCount > 0}
+                  <span class="badge in-progress" title="{getBoardActivity(board.boardId).inProgressCount} in progress">
+                    {getBoardActivity(board.boardId).inProgressCount}
                   </span>
                 {/if}
-                {#if activity.doneCount > 0}
-                  <span class="badge done" title="{activity.doneCount} done">
-                    {activity.doneCount}
+                {#if getBoardActivity(board.boardId).doneCount > 0}
+                  <span class="badge done" title="{getBoardActivity(board.boardId).doneCount} done">
+                    {getBoardActivity(board.boardId).doneCount}
                   </span>
                 {/if}
               </span>

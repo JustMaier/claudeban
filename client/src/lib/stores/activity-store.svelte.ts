@@ -134,7 +134,7 @@ class ActivityStore {
     const totalCount = cards.length;
     const lastUpdate = cardActivity.lastUpdate;
     
-    const activity: BoardActivity = {
+    return {
       boardId,
       lastViewed,
       todoCount,
@@ -144,11 +144,6 @@ class ActivityStore {
       lastUpdate,
       hasActivity: totalCount > 0
     };
-    
-    // Cache the result
-    this.activityCache.set(boardId, activity);
-    
-    return activity;
   }
 
   // Get all boards with activity
