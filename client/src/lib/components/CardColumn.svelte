@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { Card, Identity } from '$lib/generated';
+  import type { Card } from '$lib/generated';
+  import type { Identity } from '@clockworklabs/spacetimedb-sdk';
   import CardItem from './CardItem.svelte';
 
   interface Props {

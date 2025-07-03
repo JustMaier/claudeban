@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { useCollaboratorStore } from '$lib/stores/collaborator-store.svelte';
+  import { useGlobalCollaboratorStore } from '$lib/stores/global-collaborator-store.svelte';
   import { useUserStore } from '$lib/stores/user-store.svelte';
   import AddCollaboratorModal from './AddCollaboratorModal.svelte';
   import { idMatch } from '$lib/utils/db-utils';
@@ -11,13 +11,16 @@
 
   let { boardId }: Props = $props();
   
-  const collaboratorStore = useCollaboratorStore(boardId);
+  const globalCollaboratorStore = useGlobalCollaboratorStore();
   const userStore = useUserStore();
   
   let showAddModal = $state(false);
 
+  // Get collaborators for this board from the global store
+  const collaborators = $derived(globalCollaboratorStore.getCollaboratorsForBoard(boardId));
+
   async function handleAddCollaborator(identity: Identity) {
-    await collaboratorStore.addCollaborator(identity);
+    await globalCollaboratorStore.addCollaborator(boardId, identity);
   }
 </script>
 
@@ -25,19 +28,23 @@
   <h3>Collaborators</h3>
   <button onclick={() => showAddModal = true}>Add Collaborator</button>
   
-  <ul>
-    {#each collaboratorStore.collaborators as collab (collab.identity.toHexString())}
-      {@const user = userStore.users.find((u) => idMatch(u.id, collab.identity))}
-      <li>{user?.name || 'Unnamed User'}</li>
-    {/each}
-  </ul>
+  {#if !globalCollaboratorStore.initialized}
+    <p class="loading">Loading...</p>
+  {:else}
+    <ul>
+      {#each collaborators as collab (collab.identity.toHexString())}
+        {@const user = userStore.users.find((u) => idMatch(u.id, collab.identity))}
+        <li>{user?.name || 'Unnamed User'}</li>
+      {/each}
+    </ul>
+  {/if}
 </div>
 
 <AddCollaboratorModal
   show={showAddModal}
   onClose={() => showAddModal = false}
   onAdd={handleAddCollaborator}
-  existingCollaborators={collaboratorStore.collaborators}
+  existingCollaborators={collaborators}
 />
 
 <style>
@@ -58,5 +65,11 @@
 
   li {
     padding: 0.25rem 0;
+  }
+  
+  .loading {
+    color: #666;
+    font-style: italic;
+    margin: 0.5rem 0;
   }
 </style>

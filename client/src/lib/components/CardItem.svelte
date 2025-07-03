@@ -1,8 +1,9 @@
 <script lang="ts">
-  import type { Card, Identity } from '$lib/generated';
+  import type { Card } from '$lib/generated';
+  import type { Identity } from '@clockworklabs/spacetimedb-sdk';
   import { useUserStore } from '$lib/stores/user-store.svelte';
   import { useConnection } from '$lib/stores/connection-store.svelte';
-  import { useCollaboratorStore } from '$lib/stores/collaborator-store.svelte';
+  import { useGlobalCollaboratorStore } from '$lib/stores/global-collaborator-store.svelte';
   import { idMatch } from '$lib/utils/db-utils';
 
   interface Props {
@@ -23,15 +24,18 @@
   let isUpdatingStatus = $state(false);
   
   const userStore = useUserStore();
-  const collaboratorStore = useCollaboratorStore(boardId);
+  const globalCollaboratorStore = useGlobalCollaboratorStore();
   const { id: currentUserId } = useConnection();
   
   const assignee = $derived(userStore.users.find(u => idMatch(u.id, card.assignee)));
   const isMyCard = $derived(currentUserId && idMatch(card.assignee, currentUserId));
   
+  // Get collaborators for this board
+  const collaborators = $derived(globalCollaboratorStore.getCollaboratorsForBoard(boardId));
+  
   // Get list of collaborator users who can be assigned
   const availableAssignees = $derived(
-    collaboratorStore.collaborators
+    collaborators
       .map(collab => userStore.users.find(u => idMatch(u.id, collab.identity)))
       .filter(user => user && !idMatch(user.id, card.assignee))
   );
@@ -165,11 +169,6 @@
     color: #666;
   }
   
-  .info {
-    font-size: 0.875rem;
-    color: #666;
-    font-style: italic;
-  }
 
   button {
     font-size: 0.875rem;
