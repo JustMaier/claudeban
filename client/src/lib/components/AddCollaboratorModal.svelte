@@ -1,17 +1,18 @@
 <script lang="ts">
-  import type { User } from '$lib/generated';
+  import { useUserStore } from '$lib/stores/user-store.svelte';
+  import { useConnection } from '$lib/stores/connection-store.svelte';
   import { idMatch } from '$lib/utils/db-utils';
-  import type { Identity } from '@clockworklabs/spacetimedb-sdk';
 
   interface Props {
     show: boolean;
-    users: User[];
-    currentUserId: Identity;
     onClose: () => void;
     onAdd: (userId: string) => void;
   }
 
-  let { show, users, currentUserId, onClose, onAdd }: Props = $props();
+  let { show, onClose, onAdd }: Props = $props();
+  
+  const userStore = useUserStore();
+  const { id: currentUserId } = useConnection();
 
   let selectedUsers = $state<Set<string>>(new Set());
 
@@ -42,8 +43,8 @@
     <div class="modal">
       <h2>Add Collaborators</h2>
       <div class="user-list">
-        {#each users as user}
-          {#if !idMatch(user.id,currentUserId)}
+        {#each userStore.users as user}
+          {#if currentUserId && !idMatch(user.id, currentUserId)}
             <label class="user-item">
               <input
                 type="checkbox"
