@@ -66,6 +66,9 @@ export function useUserStore() {
     get users() { return Array.from(userMap.values()); },
     get userMap() { return userMap; },
     get currentUser() { return currentUser; },
+    getUserByIdentity(identity: { toHexString: () => string }) {
+      return userMap.get(identity.toHexString());
+    },
     async setUserName(name: string) {
       const { conn } = getConnection();
       await conn.reducers.setUserName(name);

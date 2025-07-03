@@ -1,5 +1,6 @@
 using SpacetimeDB;
 using System;
+using System.Linq;
 
 public static partial class Module
 {
@@ -33,6 +34,14 @@ public static partial class Module
             updatedUser.Online = false;
             ctx.Db.user.Id.Update(updatedUser);
         }
+
+        // Clean up board viewer entries for this user
+        var viewers = ctx.Db.board_viewer.Iter()
+            .Where(v => v.Identity == ctx.Sender)
+            .ToList();
+
+        foreach (var viewer in viewers)
+            ctx.Db.board_viewer.Delete(viewer);
     }
 
     [Reducer]

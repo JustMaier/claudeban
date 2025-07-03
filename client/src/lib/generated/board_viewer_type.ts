@@ -32,32 +32,40 @@ import {
   type ReducerEventContextInterface,
   type SubscriptionEventContextInterface,
 } from "@clockworklabs/spacetimedb-sdk";
-
-export type SetUserName = {
-  name: string,
+export type BoardViewer = {
+  boardId: bigint,
+  identity: Identity,
+  connectionId: string,
+  lastPing: Timestamp,
+  userAgent: string | undefined,
 };
 
 /**
  * A namespace for generated helper functions.
  */
-export namespace SetUserName {
+export namespace BoardViewer {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
   */
   export function getTypeScriptAlgebraicType(): AlgebraicType {
     return AlgebraicType.createProductType([
-      new ProductTypeElement("name", AlgebraicType.createStringType()),
+      new ProductTypeElement("boardId", AlgebraicType.createU64Type()),
+      new ProductTypeElement("identity", AlgebraicType.createIdentityType()),
+      new ProductTypeElement("connectionId", AlgebraicType.createStringType()),
+      new ProductTypeElement("lastPing", AlgebraicType.createTimestampType()),
+      new ProductTypeElement("userAgent", AlgebraicType.createOptionType(AlgebraicType.createStringType())),
     ]);
   }
 
-  export function serialize(writer: BinaryWriter, value: SetUserName): void {
-    SetUserName.getTypeScriptAlgebraicType().serialize(writer, value);
+  export function serialize(writer: BinaryWriter, value: BoardViewer): void {
+    BoardViewer.getTypeScriptAlgebraicType().serialize(writer, value);
   }
 
-  export function deserialize(reader: BinaryReader): SetUserName {
-    return SetUserName.getTypeScriptAlgebraicType().deserialize(reader);
+  export function deserialize(reader: BinaryReader): BoardViewer {
+    return BoardViewer.getTypeScriptAlgebraicType().deserialize(reader);
   }
 
 }
+
 

@@ -33,30 +33,30 @@ import {
   type SubscriptionEventContextInterface,
 } from "@clockworklabs/spacetimedb-sdk";
 
-export type SetUserName = {
-  name: string,
+export type PingBoardView = {
+  boardId: bigint,
 };
 
 /**
  * A namespace for generated helper functions.
  */
-export namespace SetUserName {
+export namespace PingBoardView {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
   */
   export function getTypeScriptAlgebraicType(): AlgebraicType {
     return AlgebraicType.createProductType([
-      new ProductTypeElement("name", AlgebraicType.createStringType()),
+      new ProductTypeElement("boardId", AlgebraicType.createU64Type()),
     ]);
   }
 
-  export function serialize(writer: BinaryWriter, value: SetUserName): void {
-    SetUserName.getTypeScriptAlgebraicType().serialize(writer, value);
+  export function serialize(writer: BinaryWriter, value: PingBoardView): void {
+    PingBoardView.getTypeScriptAlgebraicType().serialize(writer, value);
   }
 
-  export function deserialize(reader: BinaryReader): SetUserName {
-    return SetUserName.getTypeScriptAlgebraicType().deserialize(reader);
+  export function deserialize(reader: BinaryReader): PingBoardView {
+    return PingBoardView.getTypeScriptAlgebraicType().deserialize(reader);
   }
 
 }

@@ -6,9 +6,11 @@ import type { Card } from '$lib/generated';
 export interface BoardActivity {
   boardId: bigint;
   lastViewed: Date | null;
-  unreadCardCount: number;
-  recentlyCompletedCount: number;
-  newCollaboratorCount: number;
+  todoCount: number;
+  inProgressCount: number;
+  doneCount: number;
+  totalCount: number;
+  lastUpdate: Date | null;
   hasActivity: boolean;
 }
 
@@ -104,52 +106,43 @@ class ActivityStore {
     }
 
     const cardStore = useGlobalCardStore();
-    const collaboratorStore = useGlobalCollaboratorStore();
     const lastViewed = this.lastViewedMap.get(boardId) || null;
     
     // Calculate activity
     const cards = cardStore.getCardsForBoard(boardId);
     const cardActivity = cardStore.getBoardActivity(boardId);
-    const collabActivity = collaboratorStore.getBoardActivity(boardId);
     
-    let unreadCardCount = 0;
-    let recentlyCompletedCount = 0;
+    // Count cards by status
+    let todoCount = 0;
+    let inProgressCount = 0;
+    let doneCount = 0;
     
-    if (lastViewed) {
-      for (const card of cards) {
-        // Count cards created after last view
-        if (card.createdAt && new Date(card.createdAt.toString()) > lastViewed) {
-          unreadCardCount++;
-        }
-        
-        // Count cards completed in the last 24 hours
-        if (card.completedAt) {
-          const completedDate = new Date(card.completedAt.toString());
-          const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-          if (completedDate > dayAgo) {
-            recentlyCompletedCount++;
-          }
-        }
+    for (const card of cards) {
+      switch (card.state) {
+        case 'todo':
+          todoCount++;
+          break;
+        case 'in_progress':
+          inProgressCount++;
+          break;
+        case 'done':
+          doneCount++;
+          break;
       }
-    } else {
-      // If never viewed, all cards are "new"
-      unreadCardCount = cards.length;
     }
     
-    // Count new collaborators
-    let newCollaboratorCount = 0;
-    if (lastViewed && collabActivity.lastUpdate && collabActivity.lastUpdate > lastViewed) {
-      // This is approximate - we'd need to track individual collaborator join times for accuracy
-      newCollaboratorCount = 1; // At least one change happened
-    }
+    const totalCount = cards.length;
+    const lastUpdate = cardActivity.lastUpdate;
     
     const activity: BoardActivity = {
       boardId,
       lastViewed,
-      unreadCardCount,
-      recentlyCompletedCount,
-      newCollaboratorCount,
-      hasActivity: unreadCardCount > 0 || recentlyCompletedCount > 0 || newCollaboratorCount > 0
+      todoCount,
+      inProgressCount,
+      doneCount,
+      totalCount,
+      lastUpdate,
+      hasActivity: totalCount > 0
     };
     
     // Cache the result
@@ -168,15 +161,25 @@ class ActivityStore {
       .filter(activity => activity.hasActivity);
   }
 
-  // Get total unread count across all boards
-  getTotalUnreadCount(): number {
+  // Get total card count across all boards
+  getTotalCardCount(): number {
     const cardStore = useGlobalCardStore();
     const boardIds = cardStore.getLoadedBoardIds();
     
     return boardIds.reduce((total, boardId) => {
       const activity = this.getBoardActivity(boardId);
-      return total + activity.unreadCardCount;
+      return total + activity.totalCount;
     }, 0);
+  }
+
+  // Get status counts for a board (efficient method)
+  getStatusCounts(boardId: bigint): { todo: number; inProgress: number; done: number } {
+    const activity = this.getBoardActivity(boardId);
+    return {
+      todo: activity.todoCount,
+      inProgress: activity.inProgressCount,
+      done: activity.doneCount
+    };
   }
 
   // Clear activity for a board

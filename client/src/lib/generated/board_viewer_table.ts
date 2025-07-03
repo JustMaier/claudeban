@@ -32,23 +32,23 @@ import {
   type ReducerEventContextInterface,
   type SubscriptionEventContextInterface,
 } from "@clockworklabs/spacetimedb-sdk";
-import { Collaborator } from "./collaborator_type";
+import { BoardViewer } from "./board_viewer_type";
 import { type EventContext, type Reducer, RemoteReducers, RemoteTables } from ".";
 
 /**
- * Table handle for the table `collaborator`.
+ * Table handle for the table `board_viewer`.
  *
- * Obtain a handle from the [`collaborator`] property on [`RemoteTables`],
- * like `ctx.db.collaborator`.
+ * Obtain a handle from the [`boardViewer`] property on [`RemoteTables`],
+ * like `ctx.db.boardViewer`.
  *
  * Users are encouraged not to explicitly reference this type,
  * but to directly chain method calls,
- * like `ctx.db.collaborator.on_insert(...)`.
+ * like `ctx.db.boardViewer.on_insert(...)`.
  */
-export class CollaboratorTableHandle {
-  tableCache: TableCache<Collaborator>;
+export class BoardViewerTableHandle {
+  tableCache: TableCache<BoardViewer>;
 
-  constructor(tableCache: TableCache<Collaborator>) {
+  constructor(tableCache: TableCache<BoardViewer>) {
     this.tableCache = tableCache;
   }
 
@@ -56,23 +56,23 @@ export class CollaboratorTableHandle {
     return this.tableCache.count();
   }
 
-  iter(): Iterable<Collaborator> {
+  iter(): Iterable<BoardViewer> {
     return this.tableCache.iter();
   }
 
-  onInsert = (cb: (ctx: EventContext, row: Collaborator) => void) => {
+  onInsert = (cb: (ctx: EventContext, row: BoardViewer) => void) => {
     return this.tableCache.onInsert(cb);
   }
 
-  removeOnInsert = (cb: (ctx: EventContext, row: Collaborator) => void) => {
+  removeOnInsert = (cb: (ctx: EventContext, row: BoardViewer) => void) => {
     return this.tableCache.removeOnInsert(cb);
   }
 
-  onDelete = (cb: (ctx: EventContext, row: Collaborator) => void) => {
+  onDelete = (cb: (ctx: EventContext, row: BoardViewer) => void) => {
     return this.tableCache.onDelete(cb);
   }
 
-  removeOnDelete = (cb: (ctx: EventContext, row: Collaborator) => void) => {
+  removeOnDelete = (cb: (ctx: EventContext, row: BoardViewer) => void) => {
     return this.tableCache.removeOnDelete(cb);
   }
 }

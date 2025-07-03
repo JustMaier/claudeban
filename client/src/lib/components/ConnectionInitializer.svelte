@@ -4,6 +4,7 @@
   import { setConnection, useConnection } from '$lib/stores/connection-store.svelte';
   import { initializeUserStore } from '$lib/stores/user-store.svelte';
   import { initializeBoardStore } from '$lib/stores/board-store.svelte';
+  import { initializeBoardViewerStore } from '$lib/stores/board-viewer-store.svelte';
 
   interface Props {
     children: Snippet;
@@ -24,6 +25,7 @@
         // Initialize global stores after connection is established
         initializeUserStore();
         initializeBoardStore();
+        initializeBoardViewerStore();
       });
     }
   });
