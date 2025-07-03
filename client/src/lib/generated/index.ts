@@ -46,6 +46,8 @@ import { CreateBoard } from "./create_board_reducer.ts";
 export { CreateBoard };
 import { RollupMetrics } from "./rollup_metrics_reducer.ts";
 export { RollupMetrics };
+import { SetUserName } from "./set_user_name_reducer.ts";
+export { SetUserName };
 
 // Import and reexport all table handle types
 import { BoardTableHandle } from "./board_table.ts";
@@ -152,6 +154,10 @@ const REMOTE_MODULE = {
       reducerName: "RollupMetrics",
       argsType: RollupMetrics.getTypeScriptAlgebraicType(),
     },
+    SetUserName: {
+      reducerName: "SetUserName",
+      argsType: SetUserName.getTypeScriptAlgebraicType(),
+    },
   },
   versionInfo: {
     cliVersion: "1.2.0",
@@ -188,6 +194,7 @@ export type Reducer = never
 | { name: "CompleteCard", args: CompleteCard }
 | { name: "CreateBoard", args: CreateBoard }
 | { name: "RollupMetrics", args: RollupMetrics }
+| { name: "SetUserName", args: SetUserName }
 ;
 
 export class RemoteReducers {
@@ -273,6 +280,22 @@ export class RemoteReducers {
     this.connection.offReducer("RollupMetrics", callback);
   }
 
+  setUserName(name: string) {
+    const __args = { name };
+    let __writer = new BinaryWriter(1024);
+    SetUserName.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("SetUserName", __argsBuffer, this.setCallReducerFlags.setUserNameFlags);
+  }
+
+  onSetUserName(callback: (ctx: ReducerEventContext, name: string) => void) {
+    this.connection.onReducer("SetUserName", callback);
+  }
+
+  removeOnSetUserName(callback: (ctx: ReducerEventContext, name: string) => void) {
+    this.connection.offReducer("SetUserName", callback);
+  }
+
 }
 
 export class SetReducerFlags {
@@ -294,6 +317,11 @@ export class SetReducerFlags {
   rollupMetricsFlags: CallReducerFlags = 'FullUpdate';
   rollupMetrics(flags: CallReducerFlags) {
     this.rollupMetricsFlags = flags;
+  }
+
+  setUserNameFlags: CallReducerFlags = 'FullUpdate';
+  setUserName(flags: CallReducerFlags) {
+    this.setUserNameFlags = flags;
   }
 
 }

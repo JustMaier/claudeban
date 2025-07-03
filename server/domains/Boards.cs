@@ -43,10 +43,25 @@ public static partial class Module
             Owner = ctx.Sender,
             CreatedAt = ctx.Timestamp
         });
-        
+
         ctx.Db.collaborator.Insert(new Collaborator {
             BoardId = board.BoardId,
             Identity = ctx.Sender
+        });
+    }
+
+    [Reducer]
+    public static void AddCollaborator(ReducerContext ctx, ulong boardId, Identity identity)
+    {
+        if (ctx.Db.board.BoardId.Find(boardId) is null)
+            throw new Exception("board not found");
+
+        if (ctx.Db.collaborator.BoardId.Identity.Find((boardId, identity)) is not null)
+            throw new Exception("collaborator already exists");
+
+        ctx.Db.collaborator.Insert(new Collaborator {
+            BoardId = boardId,
+            Identity = identity
         });
     }
 }

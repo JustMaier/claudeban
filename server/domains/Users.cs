@@ -1,4 +1,5 @@
 using SpacetimeDB;
+using System;
 
 public static partial class Module
 {
@@ -32,5 +33,21 @@ public static partial class Module
             updatedUser.Online = false;
             ctx.Db.user.Id.Update(updatedUser);
         }
+    }
+
+    [Reducer]
+    public static void SetUserName(ReducerContext ctx, string name)
+    {
+        Log.Debug("Update username " + name);
+        if (string.IsNullOrWhiteSpace(name))
+            throw new Exception("Name cannot be empty");
+
+        var u = ctx.Db.user.Id.Find(ctx.Sender);
+        if (u is null)
+            throw new Exception("User not found");
+
+        var updatedUser = u.Value;
+        updatedUser.Name = name.Trim();
+        ctx.Db.user.Id.Update(updatedUser);
     }
 }

@@ -3,7 +3,8 @@
     "allow": [
       "Bash(spacetime publish:*)",
       "Bash(ls:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(spacetime generate:*)"
     ],
     "deny": []
   }
