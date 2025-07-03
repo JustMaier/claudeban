@@ -1,22 +1,26 @@
 <script lang="ts">
-  import type { Card } from '$lib/generated';
+  import type { Card, Identity } from '$lib/generated';
   import CardItem from './CardItem.svelte';
 
   interface Props {
     title: string;
     cards: Card[];
     status: 'todo' | 'in_progress' | 'done';
-    cardStore: { completeCard: (cardId: bigint) => Promise<void> };
+    cardStore: { 
+      completeCard: (cardId: bigint) => Promise<void>;
+      reassignCard: (cardId: bigint, newAssignee: Identity) => Promise<void>;
+    };
+    boardId: bigint;
   }
 
-  let { title, cards, status, cardStore }: Props = $props();
+  let { title, cards, status, cardStore, boardId }: Props = $props();
 </script>
 
 <div class="column">
   <h3>{title}</h3>
   <div class="cards">
     {#each cards as card}
-      <CardItem {card} {cardStore} />
+      <CardItem {card} {cardStore} {boardId} />
     {/each}
   </div>
 </div>

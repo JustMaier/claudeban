@@ -45,4 +45,22 @@ public static partial class Module
         c.CompletedAt = ctx.Timestamp;
         ctx.Db.card.CardId.Update(c);
     }
+
+    [Reducer]
+    public static void ReassignCard(ReducerContext ctx, ulong cardId, Identity newAssignee)
+    {
+        var c = ctx.Db.card.CardId.Find(cardId) ??
+            throw new Exception("no card");
+
+        // Check if sender is a collaborator on the board
+        if (!ctx.Db.collaborator.Iter().Any(col => col.BoardId == c.BoardId && col.Identity == ctx.Sender))
+            throw new Exception("not a collaborator on this board");
+
+        // Check if new assignee is a collaborator on the board
+        if (!ctx.Db.collaborator.Iter().Any(col => col.BoardId == c.BoardId && col.Identity == newAssignee))
+            throw new Exception("new assignee is not a collaborator on this board");
+
+        c.Assignee = newAssignee;
+        ctx.Db.card.CardId.Update(c);
+    }
 }

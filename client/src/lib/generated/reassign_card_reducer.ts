@@ -32,20 +32,16 @@ import {
   type ReducerEventContextInterface,
   type SubscriptionEventContextInterface,
 } from "@clockworklabs/spacetimedb-sdk";
-export type Card = {
+
+export type ReassignCard = {
   cardId: bigint,
-  boardId: bigint,
-  title: string,
-  state: string,
-  assignee: Identity,
-  createdAt: Timestamp,
-  completedAt: Timestamp | undefined,
+  newAssignee: Identity,
 };
 
 /**
  * A namespace for generated helper functions.
  */
-export namespace Card {
+export namespace ReassignCard {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
@@ -53,23 +49,17 @@ export namespace Card {
   export function getTypeScriptAlgebraicType(): AlgebraicType {
     return AlgebraicType.createProductType([
       new ProductTypeElement("cardId", AlgebraicType.createU64Type()),
-      new ProductTypeElement("boardId", AlgebraicType.createU64Type()),
-      new ProductTypeElement("title", AlgebraicType.createStringType()),
-      new ProductTypeElement("state", AlgebraicType.createStringType()),
-      new ProductTypeElement("assignee", AlgebraicType.createIdentityType()),
-      new ProductTypeElement("createdAt", AlgebraicType.createTimestampType()),
-      new ProductTypeElement("completedAt", AlgebraicType.createOptionType(AlgebraicType.createTimestampType())),
+      new ProductTypeElement("newAssignee", AlgebraicType.createIdentityType()),
     ]);
   }
 
-  export function serialize(writer: BinaryWriter, value: Card): void {
-    Card.getTypeScriptAlgebraicType().serialize(writer, value);
+  export function serialize(writer: BinaryWriter, value: ReassignCard): void {
+    ReassignCard.getTypeScriptAlgebraicType().serialize(writer, value);
   }
 
-  export function deserialize(reader: BinaryReader): Card {
-    return Card.getTypeScriptAlgebraicType().deserialize(reader);
+  export function deserialize(reader: BinaryReader): ReassignCard {
+    return ReassignCard.getTypeScriptAlgebraicType().deserialize(reader);
   }
 
 }
-
 

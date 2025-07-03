@@ -30,9 +30,9 @@
   </div>
 
   <div class="columns">
-    <CardColumn title="To Do" cards={todoCards} status="todo" {cardStore} />
-    <CardColumn title="In Progress" cards={inProgressCards} status="in_progress" {cardStore} />
-    <CardColumn title="Done" cards={doneCards} status="done" {cardStore} />
+    <CardColumn title="To Do" cards={todoCards} status="todo" {cardStore} {boardId} />
+    <CardColumn title="In Progress" cards={inProgressCards} status="in_progress" {cardStore} {boardId} />
+    <CardColumn title="Done" cards={doneCards} status="done" {cardStore} {boardId} />
   </div>
 </div>
 

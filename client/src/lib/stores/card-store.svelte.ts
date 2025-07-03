@@ -1,4 +1,4 @@
-import type { Card } from '$lib/generated';
+import type { Card, Identity } from '$lib/generated';
 import { getConnection } from './connection-store.svelte';
 import { StoreRegistry } from './store-registry';
 
@@ -6,6 +6,7 @@ interface CardStore {
   cards: Card[];
   addCard(title: string): Promise<void>;
   completeCard(cardId: bigint): Promise<void>;
+  reassignCard(cardId: bigint, newAssignee: Identity): Promise<void>;
   _cleanup?: () => void;
 }
 
@@ -77,6 +78,14 @@ function createCardStoreInstance(boardId: bigint): CardStore {
         throw error;
       }
     },
+    async reassignCard(cardId: bigint, newAssignee: Identity) {
+      try {
+        await conn.reducers.reassignCard(cardId, newAssignee);
+      } catch (error) {
+        console.error(`[CardStore ${boardId}] Failed to reassign card:`, error);
+        throw error;
+      }
+    },
     _cleanup: cleanup
   };
 }
@@ -89,6 +98,7 @@ export function getCardStore(boardId: bigint): CardStore & { release: () => void
     get cards() { return store.cards; },
     addCard: store.addCard,
     completeCard: store.completeCard,
+    reassignCard: store.reassignCard,
     release: () => cardStoreRegistry.release(key)
   };
 }
