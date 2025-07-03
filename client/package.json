@@ -9,7 +9,9 @@
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"db:update": "spacetime publish --project-path ../server kanban-plus",
+		"db:generate": "spacetime generate --lang typescript --project-path ../server --out-dir src/lib/generated"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^6.0.0",

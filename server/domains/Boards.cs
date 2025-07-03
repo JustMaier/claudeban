@@ -14,6 +14,7 @@ public static partial class Module
     }
 
     [Table(Name = "collaborator", Public = true)]
+    [SpacetimeDB.Index.BTree(Name = "BoardIdentity", Columns = [nameof(BoardId), nameof(Identity)])]
     public partial struct Collaborator
     {
         public ulong BoardId;
@@ -56,8 +57,9 @@ public static partial class Module
         if (ctx.Db.board.BoardId.Find(boardId) is null)
             throw new Exception("board not found");
 
-        if (ctx.Db.collaborator.BoardId.Identity.Find((boardId, identity)) is not null)
-            throw new Exception("collaborator already exists");
+        var collaborators = ctx.Db.collaborator.BoardIdentity.Filter((boardId, identity));
+        if (collaborators is not null && collaborators.Count() > 0)
+            return; // already exists
 
         ctx.Db.collaborator.Insert(new Collaborator {
             BoardId = boardId,
