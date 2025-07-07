@@ -23,7 +23,7 @@ Last Updated: 2025-01-03 (Manual - run `/project:sync-status` to update)
 
 1. **Check available work**:
    ```bash
-   cat TODO/TRACKING/style-overhaul.md | grep "⬜"
+   cat docs/todo/TRACKING/style-overhaul.md | grep "⬜"
    ```
 
 2. **Claim a task**:
@@ -36,17 +36,17 @@ Last Updated: 2025-01-03 (Manual - run `/project:sync-status` to update)
    ```
 
 3. **Start coding**:
-   - Follow SOPs in `TODO/README.md`
+   - Follow SOPs in `docs/todo/README.md`
    - Check dependencies in tracking file
    - Commit frequently in your branch
 
 ## 📁 Essential Locations
 
-- `/TODO/README.md` - Complete SOPs and procedures
-- `/TODO/TRACKING/style-overhaul.md` - Current work status
+- `/docs/todo/README.md` - Complete SOPs and procedures
+- `/docs/todo/TRACKING/style-overhaul.md` - Current work status
 - `/.claude/commands/` - Custom commands for common tasks
-- `/README/` - Human-friendly documentation
-- `/ARCHIVE/setup-guide.md` - Original setup instructions
+- `/docs/` - Human-friendly documentation
+- `/.claude/archive/setup-guide.md` - Original setup instructions
 
 ## 🛠️ Key Commands
 
@@ -78,7 +78,7 @@ A modern UI overhaul featuring:
 - **Mobile responsive** design
 - **Real-time collaboration** features
 
-See [TODO/style-overhaul.md](TODO/style-overhaul.md) for the complete plan.
+See [docs/todo/style-overhaul.md](docs/todo/style-overhaul.md) for the complete plan.
 
 ## 🔄 Development Workflow
 
@@ -103,11 +103,11 @@ See [TODO/style-overhaul.md](TODO/style-overhaul.md) for the complete plan.
 
 ## 🔗 Quick Links
 
-- [Full SOPs](TODO/README.md)
-- [Architecture Overview](README/architecture.md)
-- [Development Guide](README/development.md)
-- [Troubleshooting](README/troubleshooting.md)
+- [Full SOPs](docs/todo/README.md)
+- [Architecture Overview](docs/architecture/architecture.md)
+- [Development Guide](docs/development.md)
+- [Troubleshooting](docs/troubleshooting.md)
 
 ---
 
-*For setup instructions, see [ARCHIVE/setup-guide.md](ARCHIVE/setup-guide.md)*
+*For setup instructions, see [.claude/archive/setup-guide.md](.claude/archive/setup-guide.md)*

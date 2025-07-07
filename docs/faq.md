@@ -92,7 +92,7 @@ Yes, you can:
 SpacetimeDB provides Docker images. You can create a docker-compose setup with:
 - SpacetimeDB container
 - Your client served by nginx
-- See TODO for planned Docker setup
+- See docs/todo for planned Docker setup
 
 ### Can I self-host?
 Yes! SpacetimeDB is open source and can be self-hosted. You can run it on any Linux server or Kubernetes cluster.
@@ -100,7 +100,7 @@ Yes! SpacetimeDB is open source and can be self-hosted. You can run it on any Li
 ## UI/UX Questions
 
 ### Why no drag-and-drop yet?
-It's coming! Phase 3 of our [style overhaul](../TODO/TRACKING/style-overhaul.md) includes drag-and-drop with the svelte-dnd-action library.
+It's coming! Phase 3 of our [style overhaul](todo/TRACKING/style-overhaul.md) includes drag-and-drop with the svelte-dnd-action library.
 
 ### How do I customize the theme?
 Currently using basic CSS. We're implementing shadcn-svelte with full theme support including:
@@ -114,8 +114,8 @@ Basic responsive design is in place. Full mobile optimization is planned in Phas
 ## Contributing Questions
 
 ### How can I help?
-1. Check [available tasks](../TODO/TRACKING/style-overhaul.md)
-2. Read [contribution guide](../TODO/README.md)
+1. Check [available tasks](todo/TRACKING/style-overhaul.md)
+2. Read [contribution guide](todo/README.md)
 3. Pick a task and create a PR
 4. Or report bugs/suggest features
 
@@ -135,14 +135,14 @@ We use Git worktrees for parallel development:
 
 ### What features are coming?
 See our roadmap:
-- [UI Overhaul](../TODO/style-overhaul.md) - In progress
-- [Gamification](../TODO/gamification-features.md) - Planned
-- [AI Features](../TODO/ai-features.md) - Planned
+- [UI Overhaul](todo/style-overhaul.md) - In progress
+- [Gamification](todo/gamification-features.md) - Planned
+- [AI Features](todo/ai-features.md) - Planned
 
 ### Will you add [feature]?
-Check our TODO files first. If not there, feel free to suggest it! This is a demo project meant to showcase SpacetimeDB capabilities.
+Check our docs/todo files first. If not there, feel free to suggest it! This is a demo project meant to showcase SpacetimeDB capabilities.
 
 ### How can I stay updated?
 - Watch the GitHub repository
-- Check TODO/TRACKING for progress
+- Check docs/todo/TRACKING for progress
 - Join SpacetimeDB Discord

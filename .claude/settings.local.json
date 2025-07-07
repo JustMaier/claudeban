@@ -14,7 +14,7 @@
       "Bash(npm run build:*)",
       "Bash(npx:*)",
       "Bash(cd:*)",
-      "Write(TODO/*)",
+      "Write(docs/todo/*)",
       "Bash(git:*)",
       "Bash(mv:*)",
       "Bash(touch:*)",

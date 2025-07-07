@@ -241,5 +241,5 @@ for (let i = 0; i < 100; i++) {
 
 - [Svelte 5 Docs](https://svelte.dev/docs)
 - [SpacetimeDB Docs](https://docs.spacetimedb.com)
-- [Project SOPs](../TODO/README.md)
-- [Current Tasks](../TODO/TRACKING/style-overhaul.md)
+- [Project SOPs](todo/README.md)
+- [Current Tasks](todo/TRACKING/style-overhaul.md)

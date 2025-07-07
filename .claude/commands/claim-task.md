@@ -10,7 +10,7 @@ Where $ARGUMENTS is the task ID (e.g., "phase1-server-models")
 ## Instructions
 
 1. **Find the Task**
-   - Search for task ID in `TODO/TRACKING/style-overhaul.md`
+   - Search for task ID in `docs/todo/TRACKING/style-overhaul.md`
    - Verify task status is ⬜ (not started)
    - Check dependencies are met
    - Note which phase the task belongs to
@@ -26,7 +26,7 @@ Where $ARGUMENTS is the task ID (e.g., "phase1-server-models")
    ```
 
 3. **Update Tracking File**
-   In `TODO/TRACKING/style-overhaul.md`:
+   In `docs/todo/TRACKING/style-overhaul.md`:
    - Change status from ⬜ to 🟦
    - Add agent name and timestamp
    - Example:

@@ -21,8 +21,8 @@ See [Docker Guide](docker/README.md) for details.
 ```
 
 ### Option 3: Manual Setup
-- **Linux/Mac**: [Setup Guide](README/setup-linux.md)
-- **Windows**: [Setup Guide](README/setup-windows.md)
+- **Linux/Mac**: [Setup Guide](docs/setup/setup-linux.md)
+- **Windows**: [Setup Guide](docs/setup/setup-windows.md)
 - **Quick Install**: `curl -sSf https://install.spacetimedb.com | bash`
 
 ## 🎮 Key Commands
@@ -43,15 +43,15 @@ cd client && npm run check
 
 ## 📚 Documentation
 
-- [Architecture Overview](README/architecture.md) - How it all works
-- [Development Guide](README/development.md) - Contributing code
-- [SpacetimeDB Concepts](README/spacetimedb-intro.md) - Database fundamentals
-- [Feature Roadmap](TODO/style-overhaul.md) - What we're building
+- [Architecture Overview](docs/architecture/architecture.md) - How it all works
+- [Development Guide](docs/development.md) - Contributing code
+- [SpacetimeDB Concepts](docs/spacetimedb/spacetimedb-intro.md) - Database fundamentals
+- [Feature Roadmap](docs/todo/style-overhaul.md) - What we're building
 
 ## 🤝 Contributing
 
-1. Check [available tasks](TODO/TRACKING/style-overhaul.md)
-2. Read our [contribution guide](TODO/README.md)
+1. Check [available tasks](docs/todo/TRACKING/style-overhaul.md)
+2. Read our [contribution guide](docs/todo/README.md)
 3. Pick a task and start coding!
 
 ### For AI Agents
@@ -65,7 +65,7 @@ We're implementing a modern UI overhaul with:
 - 🎯 Drag-and-drop card management
 - 📱 Mobile responsive design
 
-Track progress: [TODO/TRACKING/style-overhaul.md](TODO/TRACKING/style-overhaul.md)
+Track progress: [docs/todo/TRACKING/style-overhaul.md](docs/todo/TRACKING/style-overhaul.md)
 
 ## 🏗️ Project Structure
 
@@ -76,8 +76,9 @@ initial/
 │   └── src/generated/  # SpacetimeDB bindings
 ├── server/             # C# SpacetimeDB module
 │   └── domains/        # Table & reducer definitions
-├── TODO/               # Planning & tracking
-└── README/             # Documentation
+├── docs/               # Documentation
+│   └── todo/           # Planning & tracking
+└── .claude/            # AI agent tools
 ```
 
 ## 🚦 Status
@@ -90,8 +91,8 @@ initial/
 
 ## 📞 Getting Help
 
-- **Issues**: Check [troubleshooting](README/troubleshooting.md)
-- **Questions**: See our [FAQ](README/faq.md)
+- **Issues**: Check [troubleshooting](docs/troubleshooting.md)
+- **Questions**: See our [FAQ](docs/faq.md)
 - **Bugs**: Report in [GitHub Issues](https://github.com/your-repo/issues)
 
 ---

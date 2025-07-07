@@ -5,7 +5,7 @@ Updates CLAUDE.md with the latest project information from tracking files.
 ## Instructions
 
 1. **Read Current Tracking Files**
-   - Read all `.md` files in `TODO/TRACKING/`
+   - Read all `.md` files in `docs/todo/TRACKING/`
    - Parse status indicators (⬜, 🟦, ✅, ❌, ⏸️)
    - Count completed vs pending tasks per phase
    - Identify current assignees
@@ -49,7 +49,7 @@ Updates CLAUDE.md with the latest project information from tracking files.
    - Maintain formatting consistency
 
 6. **Create Update Log Entry**
-   Append to `TODO/TRACKING/update-log.md`:
+   Append to `docs/todo/TRACKING/update-log.md`:
    ```markdown
    ## [Date] - sync-status run
    - Updated task counts

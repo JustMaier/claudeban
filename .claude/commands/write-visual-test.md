@@ -43,7 +43,7 @@ Where $ARGUMENTS describes what to test (e.g., "theme switcher functionality")
    ```
 
 4. **Save Script**
-   - Save to: `puppeteer-scripts/[script-name].js`
+   - Save to: `.claude/testing/puppeteer/[script-name].js`
    - Show the created filename
 
 5. **Provide Usage Instructions**

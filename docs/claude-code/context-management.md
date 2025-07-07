@@ -49,31 +49,31 @@ The `CLAUDE.md` file serves as the primary context document for AI agents. It sh
 
 Last Updated: [Date] ([Manual/Auto] - update method)
 
-## <¯ Current Sprint Focus
+## <ï¿½ Current Sprint Focus
 [1-2 sentences on immediate priorities]
 
-## =Ê Project Status
+## =ï¿½ Project Status
 - **Active Phase**: [Current phase/milestone]
 - **Recently Completed**: [Last 3-5 achievements]
 - **In Progress**: [Active work items]
 - **Available Tasks**: [Next available work]
 
-## =€ Quick Start
+## =ï¿½ Quick Start
 [30-second guide to productivity]
 
-## =Á Essential Locations
+## =ï¿½ Essential Locations
 [Key files and directories]
 
-## =à Key Commands
+## =ï¿½ Key Commands
 [Most-used commands with brief descriptions]
 
-## <¨ What We're Building
+## <ï¿½ What We're Building
 [Brief project vision/goals]
 
 ## = Development Workflow
 [Standard process steps]
 
-## ¡ Current Opportunities
+## ï¿½ Current Opportunities
 [Immediate work available]
 
 ## = Quick Links
@@ -126,7 +126,7 @@ Start with high-level context, then load specifics:
 ## Quick Context Load Sequence
 
 1. Read CLAUDE.md (always)
-2. Check current task in TODO/TRACKING/
+2. Check current task in docs/todo/TRACKING/
 3. Load relevant context file from .claude/contexts/
 4. Read specific code files for task
 ```
@@ -176,7 +176,7 @@ npm run build      # Production build
 - Common operations
 - Known issues
 
-### Level 3: Task Context (TODO/TRACKING/)
+### Level 3: Task Context (docs/todo/TRACKING/)
 - Specific requirements
 - Dependencies
 - Acceptance criteria
@@ -197,7 +197,7 @@ npm run build      # Production build
 ## Relevant Context Files
 1. CLAUDE.md - Current status
 2. .claude/contexts/theming.md - Theme patterns
-3. TODO/TRACKING/style-overhaul.md - Requirements
+3. docs/todo/TRACKING/style-overhaul.md - Requirements
 4. client/src/lib/stores/theme-store.svelte.ts - Current implementation
 
 ## Key Information
@@ -565,7 +565,7 @@ Load frontend development context:
 ### 1. Keep Context Fresh
 
 - Update CLAUDE.md after each sprint
-- Archive old context to ARCHIVE/ directory
+- Archive old context to .claude/archive/ directory
 - Use automated scripts where possible
 
 ### 2. Structure for Scanning
@@ -625,7 +625,7 @@ Here's a complete workflow for managing context in a typical development session
 
 ### 1. Initial Context Load
 - Read CLAUDE.md
-- Check TODO/TRACKING/style-overhaul.md
+- Check docs/todo/TRACKING/style-overhaul.md
 - Load .claude/contexts/frontend.md
 
 ### 2. Gather Requirements

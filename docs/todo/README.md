@@ -5,7 +5,7 @@ This directory contains all project planning documents, feature specifications, 
 ## Directory Structure
 
 ```
-TODO/
+docs/todo/
 ├── README.md                    # This file - organizational SOPs
 ├── TRACKING/                    # Active work tracking
 │   └── style-overhaul.md       # Current UI overhaul progress
@@ -26,7 +26,7 @@ TODO/
 
 When an agent begins work:
 1. Create a Git worktree for your work (see Git Worktree Setup below)
-2. Open the relevant tracking file in `TODO/TRACKING/`
+2. Open the relevant tracking file in `docs/todo/TRACKING/`
 3. Find your assigned section
 4. Update status from ⬜ to 🟦 (In Progress)
 5. Add your name and start timestamp
@@ -82,11 +82,11 @@ Coordination rules:
 
 ### 6. File Naming Conventions
 
-**Tracking Files**: `TODO/TRACKING/[project-name].md`
+**Tracking Files**: `docs/todo/TRACKING/[project-name].md`
 - Use kebab-case
 - Keep names descriptive but concise
 
-**Feature Plans**: `TODO/[feature-category]-[specifics].md`
+**Feature Plans**: `docs/todo/[feature-category]-[specifics].md`
 - Examples: `ai-features.md`, `mobile-responsive.md`
 
 **Component Files**: Follow existing patterns
@@ -114,7 +114,7 @@ Each feature document should include:
 ### 9. Recovery Protocol
 
 If work is interrupted:
-1. Check `TODO/TRACKING/` for last status
+1. Check `docs/todo/TRACKING/` for last status
 2. Review git status/diff
 3. Check npm/build state
 4. Resume from last incomplete checkbox
@@ -123,8 +123,8 @@ If work is interrupted:
 ### 10. Creating New Trackers
 
 When starting a new major feature:
-1. Create plan in `TODO/[feature].md`
-2. Create tracker in `TODO/TRACKING/[feature].md`
+1. Create plan in `docs/todo/[feature].md`
+2. Create tracker in `docs/todo/TRACKING/[feature].md`
 3. Use style-overhaul.md as template
 4. Include:
    - Status legend
@@ -141,29 +141,29 @@ A standardized process for reviewing completed features and providing feedback.
 When marking a task as ✅ completed:
 
 1. **Create Review Checklist**:
-   - Create `TODO/REVIEW/[feature].md`
-   - Use template from `TODO/REVIEW/README.md`
+   - Create `docs/todo/review/[feature].md`
+   - Use template from `docs/todo/review/README.md`
    - Keep test steps under 5 minutes total
    - Include specific commands and expected outputs
 
 2. **Update Tracking**:
-   - Add note: "Ready for review - see TODO/REVIEW/[feature].md"
+   - Add note: "Ready for review - see docs/todo/review/[feature].md"
    - Notify team that review is needed
 
 3. **Monitor Feedback**:
-   - Check `TODO/FEEDBACK/[feature].md` for reviewer feedback
+   - Check `docs/todo/feedback/[feature].md` for reviewer feedback
    - Address any "Must Fix" issues
    - Update feedback file with resolutions
 
 #### For Humans (Providing Feedback)
 1. **Run Review**:
-   - Find checklist in `TODO/REVIEW/[feature].md`
+   - Find checklist in `docs/todo/review/[feature].md`
    - Complete all test steps
    - Note any issues
 
 2. **Create Feedback**:
-   - Create `TODO/FEEDBACK/[feature].md`
-   - Use template from `TODO/FEEDBACK/README.md`
+   - Create `docs/todo/feedback/[feature].md`
+   - Use template from `docs/todo/feedback/README.md`
    - Include:
      - ✅ What works well
      - ❌ Specific issues with reproduction steps
@@ -193,7 +193,7 @@ spacetimedb/                    # Parent directory
 │   ├── .git/                  # Shared repository
 │   ├── client/
 │   ├── server/
-│   └── TODO/
+│   └── docs/todo/
 └── initial-worktrees/         # Worktree directory
     ├── agent-a-theme/         # Agent A's worktree
     ├── agent-b-components/    # Agent B's worktree
@@ -339,7 +339,7 @@ docker-compose -p agent-feature up -d
 ```
 
 ### Writing Puppeteer Tests
-1. Create script in `puppeteer-scripts/`
+1. Create script in `.claude/testing/puppeteer/`
 2. Available variables:
    - `browser`, `page` - Puppeteer objects
    - `CLIENT_URL` - App URL
@@ -348,7 +348,7 @@ docker-compose -p agent-feature up -d
 
 ## Current Active Projects
 
-### 1. Style Overhaul (TODO/TRACKING/style-overhaul.md)
+### 1. Style Overhaul (docs/todo/TRACKING/style-overhaul.md)
 - **Status**: Phase 1 Not Started
 - **Goal**: Complete UI redesign with shadcn-svelte
 - **Phases**: 5 phases, supporting parallel work
@@ -378,10 +378,10 @@ docker-compose -p agent-feature up -d
 ### Common Commands
 ```bash
 # Check tracking status
-cat TODO/TRACKING/style-overhaul.md | grep "Status:"
+cat docs/todo/TRACKING/style-overhaul.md | grep "Status:"
 
 # Find incomplete tasks
-grep -n "⬜\|🟦" TODO/TRACKING/*.md
+grep -n "⬜\|🟦" docs/todo/TRACKING/*.md
 
 # Update permissions if needed
 edit .claude/settings.local.json

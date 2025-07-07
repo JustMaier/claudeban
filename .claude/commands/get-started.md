@@ -18,7 +18,7 @@ Quick orientation for new agents joining the project.
    ```
 
 3. **List Available Work**
-   - Read TODO/TRACKING/style-overhaul.md
+   - Read docs/todo/TRACKING/style-overhaul.md
    - Show all ⬜ (unclaimed) tasks
    - Highlight Phase 1 tasks if not complete
    - Note any blocked tasks
@@ -34,9 +34,9 @@ Quick orientation for new agents joining the project.
 
 5. **Provide Quick Links**
    - README.md - Human-friendly docs
-   - TODO/README.md - Full SOPs
-   - TODO/TRACKING/ - Current work
-   - README/development.md - Dev guide
+   - docs/todo/README.md - Full SOPs
+   - docs/todo/TRACKING/ - Current work
+   - docs/development.md - Dev guide
 
 6. **Show Next Actions**
    Based on project state:

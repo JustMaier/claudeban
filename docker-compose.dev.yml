@@ -48,9 +48,9 @@ services:
       dockerfile: Dockerfile
     container_name: puppeteer-dev
     volumes:
-      - ./puppeteer-scripts:/scripts:rw
-      - ./screenshots:/screenshots:rw
-      - ./puppeteer-errors:/errors:rw
+      - ./.claude/testing/puppeteer:/scripts:rw
+      - ./.claude/testing/screenshots:/screenshots:rw
+      - ./.claude/testing/errors:/errors:rw
       - ./docker/dev/puppeteer/scripts:/built-in-scripts:ro
     environment:
       - CLIENT_URL=http://client:5173

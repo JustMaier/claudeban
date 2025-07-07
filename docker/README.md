@@ -59,10 +59,10 @@ docker/
 - `test-interaction.js` - Basic user flow testing
 
 ### Custom Scripts
-1. Write script in `puppeteer-scripts/`
+1. Write script in `.claude/testing/puppeteer/`
 2. Run with: `/project:test-visual custom my-script.js`
-3. Screenshots saved to `screenshots/`
-4. Errors logged to `puppeteer-errors/`
+3. Screenshots saved to `.claude/testing/screenshots/`
+4. Errors logged to `.claude/testing/errors/`
 
 ## Common Tasks
 

@@ -48,14 +48,10 @@ Dockerfile*
 .dockerignore
 
 # Project specific
-screenshots/
-puppeteer-errors/
-puppeteer-scripts/
-TODO/
-DOCS/
-README/
-ARCHIVE/
-DEBUG/
+.claude/testing/
+docs/todo/
+.claude/archive/
+.claude/debug/
 
 # Temporary files
 *.tmp

@@ -4,9 +4,9 @@
 spacetime-data/
 
 # Test artifacts
-screenshots/*.png
-puppeteer-errors/*.log
-puppeteer-scripts/*.js
+.claude/testing/screenshots/*.png
+.claude/testing/errors/*.log
+.claude/testing/puppeteer/*.js
 
 # Environment files
 .env

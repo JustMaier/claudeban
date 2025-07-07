@@ -163,22 +163,22 @@ interface Props {
 - Sheet for mobile sidebar
 - Touch gestures
 - Responsive grids
-- Create TODO/mobile-responsive.md
+- Create docs/todo/mobile-responsive.md
 
 ### Agent B: Keyboard Shortcuts
 - Command palette (Cmd+K)
 - Navigation (arrows)
 - Quick actions (C, B)
-- Create TODO/keyboard-shortcuts.md
+- Create docs/todo/keyboard-shortcuts.md
 
 ### Agent C: Toast Notifications
 - Real-time updates
 - Success/error messages
 - Preferences
-- Create TODO/notifications.md
+- Create docs/todo/notifications.md
 
 ### Agent D: Gamified Real-time Features
-Create TODO/gamification-features.md with 20 ideas:
+Create docs/todo/gamification-features.md with 20 ideas:
 1. **Live Cursor Tracking** - See other users' cursors
 2. **Presence Bubbles** - Animated user avatars
 3. **Card Race Mode** - Completion competitions
@@ -201,7 +201,7 @@ Create TODO/gamification-features.md with 20 ideas:
 20. **Ghost Users** - AI helpers
 
 ### Agent E: AI Integration
-Create TODO/ai-features.md with 8 features:
+Create docs/todo/ai-features.md with 8 features:
 1. **Natural Language Task Creation**
    - "Bug in auth.js..." → Creates card
    - Requires: Comments system
@@ -252,7 +252,7 @@ Update .claude/settings.local.json:
       "Bash(npm run dev:*)",
       "Bash(npm run build:*)",
       "Bash(npx:*)",
-      "Write(TODO/*)",
+      "Write(docs/todo/*)",
       "Bash(git:*)",
       "Bash(cd:*)"
     ],

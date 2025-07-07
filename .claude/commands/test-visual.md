@@ -40,7 +40,7 @@ Options:
    - Extract script name from $ARGUMENTS
    - Check if script exists:
    ```bash
-   ls puppeteer-scripts/${SCRIPT_NAME}
+   ls .claude/testing/puppeteer/${SCRIPT_NAME}
    ```
    - If not, show error and list available scripts
    - Run the script:
@@ -50,7 +50,7 @@ Options:
 
 3. **Handle Output**
    - If successful:
-     - List generated screenshots: `ls -la screenshots/*.png`
+     - List generated screenshots: `ls -la .claude/testing/screenshots/*.png`
      - Show success message
    - If failed:
      - Extract error log path from output
@@ -61,16 +61,16 @@ Options:
    ```
    ✅ Visual test completed!
    
-   📸 Screenshots saved to: screenshots/
+   📸 Screenshots saved to: .claude/testing/screenshots/
    Generated files:
    [list files]
    
    To view screenshots:
-   - For humans: Open screenshots/*.png in image viewer
+   - For humans: Open .claude/testing/screenshots/*.png in image viewer
    - For agents: Note filenames for reference
    
    To analyze errors (if any):
-   cat puppeteer-errors/[error-log-name]
+   cat .claude/testing/errors/[error-log-name]
    ```
 
 5. **Common Issues**
