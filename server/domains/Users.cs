@@ -35,9 +35,9 @@ public static partial class Module
             ctx.Db.user.Id.Update(updatedUser);
         }
 
-        // Clean up board viewer entries for this user
-        var viewers = ctx.Db.board_viewer.Iter()
-            .Where(v => v.Identity == ctx.Sender)
+        // Clean up board viewer entries for this specific connection
+        var viewers = ctx.Db.board_viewer.UserConnections
+            .Filter((ctx.Sender, ctx.ConnectionId?.ToString() ?? "no-connection"))
             .ToList();
 
         foreach (var viewer in viewers)

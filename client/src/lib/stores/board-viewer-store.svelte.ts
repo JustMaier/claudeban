@@ -9,8 +9,6 @@ interface BoardViewerData {
 
 // Module-level state
 let viewersByBoard = $state<Map<bigint, BoardViewerData>>(new Map());
-let currentViewing = $state<Map<bigint, string>>(new Map());
-let pingIntervals = new Map<bigint, ReturnType<typeof setInterval>>();
 let initialized = false;
 let subscription: any = null;
 let featureAvailable = false;
@@ -140,21 +138,8 @@ async function startViewing(boardId: bigint): Promise<() => void> {
   try {
     await conn.reducers.startViewingBoard(boardId);
 
-    // Track locally for cleanup
-    currentViewing.set(boardId, conn.identity.toHexString());
-
-    // Start ping interval
-    const interval = setInterval(() => {
-      conn.reducers.pingBoardView(boardId).catch(error => {
-        console.error('Failed to ping board view:', error);
-      });
-    }, 30000); // 30 seconds
-
-    pingIntervals.set(boardId, interval);
-
-    return () => {
-      stopViewing(boardId);
-    };
+    // Backend handles everything automatically
+    return () => {}; // No-op cleanup
   } catch (error) {
     console.error('Failed to start viewing board:', error);
     // Don't throw - just return a no-op cleanup function
@@ -162,29 +147,6 @@ async function startViewing(boardId: bigint): Promise<() => void> {
   }
 }
 
-async function stopViewing(boardId: bigint): Promise<void> {
-  const { conn } = getConnection();
-
-  // Clear ping interval
-  const interval = pingIntervals.get(boardId);
-  if (interval) {
-    clearInterval(interval);
-    pingIntervals.delete(boardId);
-  }
-
-  // Check if the reducer is available before calling
-  if (conn.reducers.stopViewingBoard) {
-    try {
-      await conn.reducers.stopViewingBoard(boardId);
-      currentViewing.delete(boardId);
-    } catch (error) {
-      console.error('Failed to stop viewing board:', error);
-    }
-  } else {
-    // Just clean up local state
-    currentViewing.delete(boardId);
-  }
-}
 
 // Create singleton store instance
 const boardViewerStore = {
@@ -192,7 +154,6 @@ const boardViewerStore = {
   getActiveViewerCount,
   getViewerUsers,
   startViewing,
-  stopViewing,
 
   getBoardActivity(boardId: bigint): { lastUpdate: Date | null; viewerCount: number } {
     const boardData = viewersByBoard.get(boardId);
@@ -200,10 +161,6 @@ const boardViewerStore = {
       lastUpdate: boardData?.lastUpdate || null,
       viewerCount: boardData?.viewers.size || 0
     };
-  },
-
-  isCurrentlyViewing(boardId: bigint): boolean {
-    return currentViewing.has(boardId);
   },
 
   get initialized() {
@@ -222,7 +179,6 @@ export function useGlobalBoardViewerStore() {
 // Simplified hook for managing board presence lifecycle
 export function useBoardPresence(boardId: bigint) {
   // Use regular variable, not reactive state, to avoid infinite loops
-  let cleanupFn: (() => void) | null = null;
   let hasStarted = false;
 
   // Reactive derived state
@@ -234,9 +190,7 @@ export function useBoardPresence(boardId: bigint) {
     // Only start viewing if store is initialized and we haven't started for this boardId
     if (boardViewerStore.initialized && !hasStarted) {
       hasStarted = true;
-      boardViewerStore.startViewing(boardId).then(cleanup => {
-        cleanupFn = cleanup;
-      }).catch(err => {
+      boardViewerStore.startViewing(boardId).catch(err => {
         console.error('[useBoardPresence] Failed to start viewing:', err);
       });
     }
@@ -245,10 +199,6 @@ export function useBoardPresence(boardId: bigint) {
   // Cleanup effect - separate from start effect
   $effect(() => {
     return () => {
-      if (cleanupFn) {
-        cleanupFn();
-        cleanupFn = null;
-      }
       hasStarted = false;
     };
   });

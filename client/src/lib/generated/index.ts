@@ -46,8 +46,6 @@ import { CompleteCard } from "./complete_card_reducer.ts";
 export { CompleteCard };
 import { CreateBoard } from "./create_board_reducer.ts";
 export { CreateBoard };
-import { PingBoardView } from "./ping_board_view_reducer.ts";
-export { PingBoardView };
 import { ReassignCard } from "./reassign_card_reducer.ts";
 export { ReassignCard };
 import { RollupMetrics } from "./rollup_metrics_reducer.ts";
@@ -56,8 +54,6 @@ import { SetUserName } from "./set_user_name_reducer.ts";
 export { SetUserName };
 import { StartViewingBoard } from "./start_viewing_board_reducer.ts";
 export { StartViewingBoard };
-import { StopViewingBoard } from "./stop_viewing_board_reducer.ts";
-export { StopViewingBoard };
 import { UpdateCardStatus } from "./update_card_status_reducer.ts";
 export { UpdateCardStatus };
 
@@ -174,10 +170,6 @@ const REMOTE_MODULE = {
       reducerName: "CreateBoard",
       argsType: CreateBoard.getTypeScriptAlgebraicType(),
     },
-    PingBoardView: {
-      reducerName: "PingBoardView",
-      argsType: PingBoardView.getTypeScriptAlgebraicType(),
-    },
     ReassignCard: {
       reducerName: "ReassignCard",
       argsType: ReassignCard.getTypeScriptAlgebraicType(),
@@ -193,10 +185,6 @@ const REMOTE_MODULE = {
     StartViewingBoard: {
       reducerName: "StartViewingBoard",
       argsType: StartViewingBoard.getTypeScriptAlgebraicType(),
-    },
-    StopViewingBoard: {
-      reducerName: "StopViewingBoard",
-      argsType: StopViewingBoard.getTypeScriptAlgebraicType(),
     },
     UpdateCardStatus: {
       reducerName: "UpdateCardStatus",
@@ -238,12 +226,10 @@ export type Reducer = never
 | { name: "ClientDisconnect", args: ClientDisconnect }
 | { name: "CompleteCard", args: CompleteCard }
 | { name: "CreateBoard", args: CreateBoard }
-| { name: "PingBoardView", args: PingBoardView }
 | { name: "ReassignCard", args: ReassignCard }
 | { name: "RollupMetrics", args: RollupMetrics }
 | { name: "SetUserName", args: SetUserName }
 | { name: "StartViewingBoard", args: StartViewingBoard }
-| { name: "StopViewingBoard", args: StopViewingBoard }
 | { name: "UpdateCardStatus", args: UpdateCardStatus }
 ;
 
@@ -330,22 +316,6 @@ export class RemoteReducers {
     this.connection.offReducer("CreateBoard", callback);
   }
 
-  pingBoardView(boardId: bigint) {
-    const __args = { boardId };
-    let __writer = new BinaryWriter(1024);
-    PingBoardView.getTypeScriptAlgebraicType().serialize(__writer, __args);
-    let __argsBuffer = __writer.getBuffer();
-    this.connection.callReducer("PingBoardView", __argsBuffer, this.setCallReducerFlags.pingBoardViewFlags);
-  }
-
-  onPingBoardView(callback: (ctx: ReducerEventContext, boardId: bigint) => void) {
-    this.connection.onReducer("PingBoardView", callback);
-  }
-
-  removeOnPingBoardView(callback: (ctx: ReducerEventContext, boardId: bigint) => void) {
-    this.connection.offReducer("PingBoardView", callback);
-  }
-
   reassignCard(cardId: bigint, newAssignee: Identity) {
     const __args = { cardId, newAssignee };
     let __writer = new BinaryWriter(1024);
@@ -410,22 +380,6 @@ export class RemoteReducers {
     this.connection.offReducer("StartViewingBoard", callback);
   }
 
-  stopViewingBoard(boardId: bigint) {
-    const __args = { boardId };
-    let __writer = new BinaryWriter(1024);
-    StopViewingBoard.getTypeScriptAlgebraicType().serialize(__writer, __args);
-    let __argsBuffer = __writer.getBuffer();
-    this.connection.callReducer("StopViewingBoard", __argsBuffer, this.setCallReducerFlags.stopViewingBoardFlags);
-  }
-
-  onStopViewingBoard(callback: (ctx: ReducerEventContext, boardId: bigint) => void) {
-    this.connection.onReducer("StopViewingBoard", callback);
-  }
-
-  removeOnStopViewingBoard(callback: (ctx: ReducerEventContext, boardId: bigint) => void) {
-    this.connection.offReducer("StopViewingBoard", callback);
-  }
-
   updateCardStatus(cardId: bigint, newStatus: string) {
     const __args = { cardId, newStatus };
     let __writer = new BinaryWriter(1024);
@@ -465,11 +419,6 @@ export class SetReducerFlags {
     this.createBoardFlags = flags;
   }
 
-  pingBoardViewFlags: CallReducerFlags = 'FullUpdate';
-  pingBoardView(flags: CallReducerFlags) {
-    this.pingBoardViewFlags = flags;
-  }
-
   reassignCardFlags: CallReducerFlags = 'FullUpdate';
   reassignCard(flags: CallReducerFlags) {
     this.reassignCardFlags = flags;
@@ -488,11 +437,6 @@ export class SetReducerFlags {
   startViewingBoardFlags: CallReducerFlags = 'FullUpdate';
   startViewingBoard(flags: CallReducerFlags) {
     this.startViewingBoardFlags = flags;
-  }
-
-  stopViewingBoardFlags: CallReducerFlags = 'FullUpdate';
-  stopViewingBoard(flags: CallReducerFlags) {
-    this.stopViewingBoardFlags = flags;
   }
 
   updateCardStatusFlags: CallReducerFlags = 'FullUpdate';

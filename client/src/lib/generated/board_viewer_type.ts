@@ -36,7 +36,6 @@ export type BoardViewer = {
   boardId: bigint,
   identity: Identity,
   connectionId: string,
-  lastPing: Timestamp,
   userAgent: string | undefined,
 };
 
@@ -53,7 +52,6 @@ export namespace BoardViewer {
       new ProductTypeElement("boardId", AlgebraicType.createU64Type()),
       new ProductTypeElement("identity", AlgebraicType.createIdentityType()),
       new ProductTypeElement("connectionId", AlgebraicType.createStringType()),
-      new ProductTypeElement("lastPing", AlgebraicType.createTimestampType()),
       new ProductTypeElement("userAgent", AlgebraicType.createOptionType(AlgebraicType.createStringType())),
     ]);
   }
